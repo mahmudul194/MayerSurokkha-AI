@@ -1,1 +1,4 @@
 SYSTEM_REQUIREMENTS.md
+.env
+backend/.env
+.env.*
