@@ -49,7 +49,7 @@ export function Sidebar({
             <RoleBadge role={role} t={t} language={language} />
           </div>
         )}
-        {menuItems.map((item) => (
+        {menuItems.map((item: any) => (
           <button
             key={item.id}
             onClick={() => {
