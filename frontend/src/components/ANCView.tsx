@@ -56,7 +56,7 @@ export function ANCView({ currentWeek, t, language, showToast }: any) {
   const saveStatus = async (week: number, status: string) => {
     const existing = await db.ancVisits.where('week').equals(week).first();
     if (existing) {
-      await db.ancVisits.update(existing.id!, { status, synced: false });
+      await db.ancVisits.update(existing.id!, { status: status as any, synced: false });
     } else {
       await db.ancVisits.add({ week, status: status as any, synced: false });
     }

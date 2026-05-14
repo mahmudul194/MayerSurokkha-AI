@@ -6,10 +6,7 @@
       "use": "@vercel/next"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ]
+  "env": {
+    "NEXTAUTH_URL": "https://mayer-surokkha.vercel.app"
+  }
 }
