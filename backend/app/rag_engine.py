@@ -56,7 +56,7 @@ class MayerRAGEngine:
 
     async def query(self, message: str, history: List[dict], language: str = "en"):
         if not self.model:
-            return "Neural Link offline. Local guidance only."
+            return "API Key not configured. Please check backend/.env file."
         
         chat = self.model.start_chat(history=[
             {"role": "user", "parts": [m["content"]]} if m["role"] == "user" else {"role": "model", "parts": [m["content"]]}
