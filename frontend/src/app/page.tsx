@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/db';
 import { translations } from '@/lib/translations';
@@ -24,11 +25,18 @@ import { CustomToast, ToastType } from '@/components/CustomToast';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState('bn');
   const [collapsed, setCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
   
   // Toast State
   const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
@@ -81,7 +89,8 @@ export default function Dashboard() {
     showToast(language === 'bn' ? "সাফল্যের সাথে সিঙ্ক হয়েছে" : "Neural Link Sync Complete", "success");
   };
 
-  if (loading) return <LoadingScreen language={language} />;
+  if (status === 'loading' || loading) return <LoadingScreen language={language} />;
+  if (status === 'unauthenticated') return null;
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-100">
