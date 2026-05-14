@@ -11,15 +11,14 @@ import { RoleBadge } from "./RoleBadge";
 
 export function Sidebar({ 
   collapsed, setCollapsed, activeTab, setActiveTab, 
-  language, setLanguage, role, t,
-  onAIChat, onKnowledge, onANC, onNearby
+  language, setLanguage, role, t
 }: any) {
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard },
-    { id: 'chat', icon: MessageCircle, label: t.ai_assistant, action: onAIChat },
-    { id: 'knowledge', icon: BookOpen, label: t.knowledge_base, action: onKnowledge },
-    { id: 'anc', icon: Calendar, label: t.anc_schedule, action: onANC },
-    { id: 'nearby', icon: MapPin, label: t.nearby_centers, action: onNearby },
+    { id: 'chat', icon: MessageCircle, label: t.ai_assistant },
+    { id: 'knowledge', icon: BookOpen, label: t.knowledge_base },
+    { id: 'anc', icon: Calendar, label: t.anc_schedule },
+    { id: 'nearby', icon: MapPin, label: t.nearby_centers },
     { id: 'settings', icon: Settings, label: t.settings },
   ];
 
