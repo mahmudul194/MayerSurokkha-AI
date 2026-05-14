@@ -20,6 +20,7 @@ import { NearbyView } from '@/components/NearbyView';
 import { SettingsView } from '@/components/SettingsView';
 import { LogVitalsModal } from '@/components/LogVitalsModal';
 import { OnboardNodeModal } from '@/components/OnboardNodeModal';
+import { CustomToast, ToastType } from '@/components/CustomToast';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -29,6 +30,18 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isOnline, setIsOnline] = useState(true);
   
+  // Toast State
+  const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
+    message: '',
+    type: 'info',
+    visible: false
+  });
+
+  const showToast = (message: string, type: ToastType = 'info') => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => setToast(prev => ({ ...prev, visible: false })), 5000);
+  };
+
   // Modal States (Only for actions, not features)
   const [showLogModal, setShowLogModal] = useState(false);
   const [showOnboardModal, setShowOnboardModal] = useState(false);
@@ -65,6 +78,7 @@ export default function Dashboard() {
     setIsSyncing(true);
     await new Promise(r => setTimeout(r, 2000));
     setIsSyncing(false);
+    showToast(language === 'bn' ? "সাফল্যের সাথে সিঙ্ক হয়েছে" : "Neural Link Sync Complete", "success");
   };
 
   if (loading) return <LoadingScreen language={language} />;
@@ -100,31 +114,32 @@ export default function Dashboard() {
 
         <div className="p-12 max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
-             <motion.div
+              <motion.div
                key={`${userRole}-${activeTab}`}
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                exit={{ opacity: 0, y: -20 }}
                transition={{ duration: 0.5 }}
              >
-                {activeTab === 'settings' && <SettingsView language={language} setLanguage={setLanguage} t={t} />}
-                {activeTab === 'chat' && <ChatView t={t} language={language} />}
-                {activeTab === 'knowledge' && <KnowledgeView t={t} language={language} />}
-                {activeTab === 'anc' && <ANCView t={t} language={language} />}
-                {activeTab === 'nearby' && <NearbyView t={t} language={language} />}
+                {activeTab === 'settings' && <SettingsView language={language} setLanguage={setLanguage} t={t} showToast={showToast} />}
+                {activeTab === 'chat' && <ChatView t={t} language={language} showToast={showToast} />}
+                {activeTab === 'knowledge' && <KnowledgeView t={t} language={language} showToast={showToast} />}
+                {activeTab === 'anc' && <ANCView t={t} language={language} showToast={showToast} />}
+                {activeTab === 'nearby' && <NearbyView t={t} language={language} showToast={showToast} />}
                 {activeTab === 'dashboard' && (
                   <>
                     {userRole === 'MOTHER' && (
                       <MotherView 
-                        onSOS={() => alert("SOS Triggered")} 
+                        onSOS={() => showToast(t.sos_triggered || "SOS Alert Sent to Nodes", "error")} 
                         onLog={() => setShowLogModal(true)} 
                         t={t} 
                         language={language}
                         isAudioPlaying={isAudioPlaying}
                         setIsAudioPlaying={setIsAudioPlaying}
+                        showToast={showToast}
                       />
                     )}
-                    {userRole === 'DOCTOR' && <DoctorView t={t} language={language} />}
+                    {userRole === 'DOCTOR' && <DoctorView t={t} language={language} showToast={showToast} />}
                     {userRole === 'WORKER' && (
                       <WorkerView 
                         onSync={handleSync} 
@@ -132,9 +147,10 @@ export default function Dashboard() {
                         isSyncing={isSyncing} 
                         t={t} 
                         language={language} 
+                        showToast={showToast}
                       />
                     )}
-                    {userRole === 'ADMIN' && <AdminView t={t} language={language} />}
+                    {userRole === 'ADMIN' && <AdminView t={t} language={language} showToast={showToast} />}
                   </>
                 )}
              </motion.div>
@@ -154,6 +170,13 @@ export default function Dashboard() {
         onClose={() => setShowOnboardModal(false)} 
         t={t} 
         language={language} 
+      />
+
+      <CustomToast 
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.visible}
+        onClose={() => setToast(prev => ({ ...prev, visible: false }))}
       />
     </div>
   );
