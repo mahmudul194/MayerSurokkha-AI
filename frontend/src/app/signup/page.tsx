@@ -6,12 +6,7 @@ import gsap from 'gsap';
 import { Heart, Globe2, Mail, Lock, User, ArrowRight, ShieldCheck, Users, Stethoscope, Briefcase, Sparkles, Activity, Baby } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { cn } from '@/lib/utils';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -69,7 +64,7 @@ export default function SignupPage() {
               <div className="h-14 w-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-200">
                  <Sparkles className="h-8 w-8 text-white fill-white" />
               </div>
-              <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase">MayerSurokkha</span>
+              <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Mayer Surokkha</span>
            </div>
            
            <h1 className="text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter">
@@ -85,7 +80,7 @@ export default function SignupPage() {
         <motion.div className="max-w-md w-full glass-panel rounded-[4rem] p-12 lg:p-16 border-white shadow-2xl bg-white/90">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">{t.create_node}</h2>
-            <p className="text-slate-400 text-[10px] mt-3 font-black tracking-[0.5em] uppercase">{t.provisioning}</p>
+            <p className="text-slate-400 text-[14px] mt-3 font-black tracking-[0.5em] uppercase">{t.provisioning}</p>
           </div>
 
           <div className="flex gap-2 mb-10 bg-slate-50 p-2 rounded-3xl border border-slate-100">
@@ -100,14 +95,14 @@ export default function SignupPage() {
             <FormInput label={t.email_label} name="email" placeholder="mother@nexus.ai" value={email} onChange={(e: any) => setEmail(e.target.value)} isBangla={language === 'bn'} />
             <FormInput label={t.password_label} name="password" placeholder="••••••••" type="password" value={password} onChange={(e: any) => setPassword(e.target.value)} isBangla={language === 'bn'} />
 
-            <button type="submit" disabled={isLoading} className="w-full h-20 bg-blue-600 text-white font-black rounded-3xl shadow-2xl shadow-blue-200 transition-all flex items-center justify-center gap-4 group mt-6 uppercase tracking-widest text-xs">
+            <button type="submit" disabled={isLoading} className="w-full h-20 bg-blue-600 text-white font-black rounded-3xl shadow-2xl shadow-blue-200 transition-all flex items-center justify-center gap-4 group mt-6 uppercase tracking-widest text-sm">
               {isLoading ? "Provisioning..." : t.signup_btn}
               {!isLoading && <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-2" />}
             </button>
           </form>
 
           <div className="mt-12 text-center">
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">
+            <p className="text-slate-400 text-[13px] font-black uppercase tracking-widest">
               {t.existing_node}
               <button onClick={() => router.push('/login')} className="text-blue-600 ml-2 underline">{t.initiate_login}</button>
             </p>
@@ -126,7 +121,7 @@ function IntroAnimation() {
              <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ repeat: Infinity, duration: 2 }} className="absolute inset-0 bg-blue-500 rounded-full blur-2xl" />
              <div className="relative h-full w-full bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-200"><Heart className="h-16 w-16 text-white fill-white" /></div>
           </div>
-          <motion.h1 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5, duration: 1 }} className="text-5xl font-black text-slate-900 tracking-tighter uppercase italic">MayerSurokkha</motion.h1>
+          <motion.h1 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5, duration: 1 }} className="text-5xl font-black text-slate-900 tracking-tighter uppercase italic">Mayer Surokkha</motion.h1>
        </motion.div>
     </div>
   );
@@ -137,7 +132,7 @@ function FormInput({ label, name, placeholder, type = "text", value, onChange, i
     <div className="space-y-2">
        <label className={cn(
          "font-black text-slate-400 uppercase tracking-widest ml-2",
-         isBangla ? "text-[12px]" : "text-[10px]"
+         isBangla ? "text-[14px]" : "text-[12px]"
        )}>{label}</label>
        <input type={type} name={name} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-16 bg-slate-50 border border-slate-100 rounded-3xl px-8 text-slate-900 font-black outline-hidden focus:border-blue-300 transition-all tracking-widest" required />
     </div>
@@ -153,7 +148,7 @@ function RoleTab({ icon, label, active, onClick, isBangla }: any) {
       <div className={active ? "scale-110" : ""}>{icon}</div>
       <span className={cn(
         "font-black uppercase tracking-widest text-center px-1",
-        isBangla ? "text-[11px]" : "text-[8px]"
+         isBangla ? "text-[13px]" : "text-[11px]"
       )}>{label}</span>
     </button>
   );
