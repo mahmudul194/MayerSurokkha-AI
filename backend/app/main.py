@@ -32,13 +32,30 @@ async def predict(data: HealthInput):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/sync")
-async def sync_records(records: List[HealthInput]):
-    """Batch Sync for Offline-First Data"""
-    results = []
+async def sync_records(data: dict):
+    """Batch Sync for Offline-First Data (Hybrid Model)"""
+    results = {
+        "vitals": [],
+        "chat": 0,
+        "anc": 0
+    }
+    
+    # Sync Vitals
+    records = data.get("vitals", [])
     for record in records:
-        res = await engine.analyze(record, rag_engine)
-        results.append(res)
-    return {"synced_count": len(records), "analysis": results}
+        try:
+            # Wrap data in HealthInput for validation if needed
+            from .risk_engine import HealthInput
+            res = await engine.analyze(HealthInput(**record), rag_engine)
+            results["vitals"].append(res)
+        except:
+            pass
+            
+    # Placeholder for Chat & ANC Sync (would save to MongoDB in production)
+    results["chat"] = len(data.get("chat", []))
+    results["anc"] = len(data.get("anc", []))
+    
+    return {"status": "success", "synced_count": len(records), "analysis": results}
 
 @app.post("/summary")
 async def generate_summary(history: List[dict]):

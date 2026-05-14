@@ -10,7 +10,7 @@ class MayerRAGEngine:
         if api_key:
             print("Neural Link: GEMINI_API_KEY detected. Initializing RAG node...")
             genai.configure(api_key=api_key)
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            self.model = genai.GenerativeModel('gemini-3-flash-preview')
         else:
             print("Neural Link: GEMINI_API_KEY NOT FOUND. AI features will be limited.")
             self.model = None
