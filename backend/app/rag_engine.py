@@ -31,7 +31,15 @@ class MayerRAGEngine:
             response = self.model.generate_content(prompt)
             # Cleanup and parse JSON
             text = response.text.replace("```json", "").replace("```", "").strip()
-            result = json.loads(text)
+            try:
+                result = json.loads(text)
+            except json.JSONDecodeError:
+                # Fallback if JSON parsing fails
+                result = {
+                    "risk_level": risk_level,
+                    "explanation": text[:200] if text else "Analysis completed.",
+                    "emergency_alert": risk_level == "High"
+                }
             
             # Generate Bangla Voice advice in parallel
             voice_prompt = BANGLA_VOICE_PROMPT.format(text=result["explanation"])
