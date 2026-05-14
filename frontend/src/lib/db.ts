@@ -19,12 +19,17 @@ export interface HealthRecord {
 }
 
 export class MayerDB extends Dexie {
-  healthRecords!: Table<HealthRecord>;
+  chatHistory!: Table<{ id?: number, role: 'user' | 'bot', content: string, timestamp: number, synced: boolean }>;
+  ancVisits!: Table<{ id?: number, week: number, status: 'completed' | 'active' | 'pending', date?: string, synced: boolean }>;
+  knowledgeSaved!: Table<{ id?: number, title: string, category: string, timestamp: number, synced: boolean }>;
 
   constructor() {
     super('MayerSurokkhaDB');
     this.version(1).stores({
-      healthRecords: '++id, mother_id, risk_level, synced, timestamp'
+      healthRecords: '++id, mother_id, risk_level, synced, timestamp',
+      chatHistory: '++id, role, timestamp, synced',
+      ancVisits: '++id, week, status, synced',
+      knowledgeSaved: '++id, title, category, synced'
     });
   }
 
