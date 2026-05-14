@@ -36,7 +36,7 @@ export function AIChatModal({ isOpen, onClose, t, language }: any) {
       const data = await res.json();
       setMessages(prev => [...prev, { role: 'bot', content: data.response }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'bot', content: "Neural link timeout. Please try again." }]);
+      setMessages(prev => [...prev, { role: 'bot', content: "Neural link error. Ensure API Key is configured and backend is running." }]);
     } finally {
       setIsLoading(false);
     }
