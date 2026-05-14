@@ -1,12 +1,12 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .risk_engine import engine, HealthInput, RiskResult
 from .rag_engine import rag_engine
 from typing import List
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = FastAPI(title="MayerSurokkha AI - Health API")
 
@@ -53,6 +53,19 @@ async def generate_summary(history: List[dict]):
         return {"summary": response.text.strip()}
     except:
         return {"summary": "Check your progress in the dashboard history."}
+
+@app.post("/chat")
+async def chat_endpoint(data: dict):
+    """Conversational AI for Clinical Queries"""
+    message = data.get("message", "")
+    history = data.get("history", [])
+    language = data.get("language", "en")
+    
+    try:
+        response = await rag_engine.query(message, history, language)
+        return {"response": response}
+    except Exception as e:
+        return {"response": f"Error connecting to Neural Link: {str(e)}"}
 
 if __name__ == "__main__":
     import uvicorn
