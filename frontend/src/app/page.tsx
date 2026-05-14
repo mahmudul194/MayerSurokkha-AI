@@ -8,18 +8,18 @@ import { translations } from '@/lib/translations';
 
 // Modular Components
 import { Sidebar } from '@/components/Sidebar';
-import { LoadingScreen, SyncIndicator } from '@/components/LoadingScreen';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { MotherView } from '@/components/MotherView';
 import { DoctorView } from '@/components/DoctorView';
 import { WorkerView } from '@/components/WorkerView';
 import { AdminView } from '@/components/AdminView';
-import { AIChatModal } from '@/components/AIChatModal';
-import { KnowledgeBaseModal } from '@/components/KnowledgeBaseModal';
-import { ANCModal } from '@/components/ANCModal';
-import { NearbyCentersModal } from '@/components/NearbyCentersModal';
+import { ChatView } from '@/components/ChatView';
+import { KnowledgeView } from '@/components/KnowledgeView';
+import { ANCView } from '@/components/ANCView';
+import { NearbyView } from '@/components/NearbyView';
+import { SettingsView } from '@/components/SettingsView';
 import { LogVitalsModal } from '@/components/LogVitalsModal';
 import { OnboardNodeModal } from '@/components/OnboardNodeModal';
-import { SettingsView } from '@/components/SettingsView';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -29,11 +29,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isOnline, setIsOnline] = useState(true);
   
-  // Modal States
-  const [showAIChat, setShowAIChat] = useState(false);
-  const [showKnowledgeBase, setShowKnowledgeBase] = useState(false);
-  const [showANCModal, setShowANCModal] = useState(false);
-  const [showNearbyCenters, setShowNearbyCenters] = useState(false);
+  // Modal States (Only for actions, not features)
   const [showLogModal, setShowLogModal] = useState(false);
   const [showOnboardModal, setShowOnboardModal] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -84,17 +80,12 @@ export default function Dashboard() {
         setLanguage={setLanguage}
         role={userRole}
         t={t}
-        onAIChat={() => setShowAIChat(true)}
-        onKnowledge={() => setShowKnowledgeBase(true)}
-        onANC={() => setShowANCModal(true)}
-        onNearby={() => setShowNearbyCenters(true)}
       />
 
       <main className={`transition-all duration-500 ${collapsed ? 'pl-24' : 'pl-80'}`}>
         <header className="h-24 bg-white/80 backdrop-blur-md border-b border-slate-100 flex items-center justify-between px-12 sticky top-0 z-40">
            <div className="flex items-center gap-6">
-              <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">{activeTab === 'settings' ? (language === 'bn' ? "সেটিংস" : "Settings") : t.dashboard}</h1>
-              <SyncIndicator isOnline={isOnline} language={language} />
+              <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">{activeTab}</h1>
            </div>
            <div className="flex items-center gap-6">
               <div className="text-right">
@@ -116,9 +107,12 @@ export default function Dashboard() {
                exit={{ opacity: 0, y: -20 }}
                transition={{ duration: 0.5 }}
              >
-                {activeTab === 'settings' ? (
-                  <SettingsView language={language} setLanguage={setLanguage} t={t} />
-                ) : (
+                {activeTab === 'settings' && <SettingsView language={language} setLanguage={setLanguage} t={t} />}
+                {activeTab === 'chat' && <ChatView t={t} language={language} />}
+                {activeTab === 'knowledge' && <KnowledgeView t={t} language={language} />}
+                {activeTab === 'anc' && <ANCView t={t} language={language} />}
+                {activeTab === 'nearby' && <NearbyView t={t} language={language} />}
+                {activeTab === 'dashboard' && (
                   <>
                     {userRole === 'MOTHER' && (
                       <MotherView 
@@ -148,31 +142,6 @@ export default function Dashboard() {
         </div>
       </main>
 
-      <AIChatModal 
-        isOpen={showAIChat} 
-        onClose={() => setShowAIChat(false)} 
-        t={t} 
-        language={language} 
-      />
-      <KnowledgeBaseModal 
-        isOpen={showKnowledgeBase} 
-        onClose={() => setShowKnowledgeBase(false)} 
-        t={t} 
-        language={language} 
-      />
-      <ANCModal 
-        isOpen={showANCModal} 
-        onClose={() => setShowANCModal(false)} 
-        currentWeek={28}
-        t={t} 
-        language={language} 
-      />
-      <NearbyCentersModal 
-        isOpen={showNearbyCenters} 
-        onClose={() => setShowNearbyCenters(false)} 
-        t={t} 
-        language={language} 
-      />
       <LogVitalsModal 
         isOpen={showLogModal} 
         onClose={() => setShowLogModal(false)} 
@@ -189,4 +158,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
