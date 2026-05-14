@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/db";
 
-export function ANCView({ currentWeek, t, language }: any) {
+export function ANCView({ currentWeek, t, language, showToast }: any) {
   const [schedule, setSchedule] = useState<any[]>([]);
 
   useEffect(() => {
@@ -43,6 +43,9 @@ export function ANCView({ currentWeek, t, language }: any) {
       if (item.week === week) {
         const nextStatus = item.status === 'completed' ? 'pending' : 'completed';
         saveStatus(week, nextStatus);
+        if (nextStatus === 'completed') {
+          showToast(language === 'bn' ? `সপ্তাহ ${week} মাইলস্টোন সম্পন্ন হয়েছে!` : `Week ${week} Milestone Completed!`, "success");
+        }
         return { ...item, status: nextStatus };
       }
       return item;

@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/db";
 
-export function ChatView({ t, language }: any) {
+export function ChatView({ t, language, showToast }: any) {
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +29,17 @@ export function ChatView({ t, language }: any) {
     };
   }, []);
 
+  const stripMarkdown = (text: string) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Bold
+      .replace(/\*(.*?)\*/g, '$1')     // Italic
+      .replace(/#(.*?)/g, '$1')        // Headers
+      .replace(/`(.*?)`/g, '$1');      // Code
+  };
+
   const speak = (text: string, id: number) => {
     try {
+      const cleanText = stripMarkdown(text);
       if (speakingId === id) {
         window.speechSynthesis.cancel();
         setSpeakingId(null);
@@ -38,28 +47,58 @@ export function ChatView({ t, language }: any) {
       }
 
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
       
-      const targetLang = language === 'bn' ? 'bn' : 'en';
-      utterance.lang = language === 'bn' ? 'bn-BD' : 'en-US';
-      
-      // Find appropriate voice with fallback
-      const voice = voices.find(v => v.lang.startsWith(targetLang)) || 
-                    voices.find(v => v.lang.includes(targetLang.toUpperCase()));
-      
-      if (voice) utterance.voice = voice;
-      utterance.rate = 0.9; // Slightly slower for clarity in medical context
+      const attemptSpeak = (retries = 3) => {
+        const currentVoices = window.speechSynthesis.getVoices();
+        
+        if (currentVoices.length === 0 && retries > 0) {
+          setTimeout(() => attemptSpeak(retries - 1), 250);
+          return;
+        }
 
-      utterance.onend = () => setSpeakingId(null);
-      utterance.onerror = (e) => {
-        console.error("Speech error:", e);
-        setSpeakingId(null);
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        const targetLang = language === 'bn' ? 'bn' : 'en';
+        
+        // Comprehensive priority matching for Bangla/Bengali
+        let voice = currentVoices.find(v => v.lang === 'bn-BD') ||
+                    currentVoices.find(v => v.lang === 'bn-IN') ||
+                    currentVoices.find(v => v.lang.startsWith('bn')) ||
+                    currentVoices.find(v => v.name.toLowerCase().includes('bengali')) ||
+                    currentVoices.find(v => v.name.toLowerCase().includes('bangla'));
+
+        if (voice) {
+          utterance.voice = voice;
+          utterance.lang = voice.lang;
+        } else {
+          utterance.lang = language === 'bn' ? 'bn-BD' : 'en-US';
+        }
+        
+        utterance.rate = 0.8; 
+        utterance.volume = 1;
+        utterance.pitch = 1;
+
+        utterance.onstart = () => setSpeakingId(id);
+        utterance.onend = () => setSpeakingId(null);
+        utterance.onerror = (e: any) => {
+          if (e.error !== 'interrupted') {
+            console.error("TTS Error:", e.error);
+            if (e.error === 'network') {
+              showToast("Network error: Voice engine requires internet", "error");
+            }
+          }
+          setSpeakingId(null);
+        };
+        
+        window.speechSynthesis.speak(utterance);
       };
-      
-      setSpeakingId(id);
-      window.speechSynthesis.speak(utterance);
+
+      setTimeout(() => attemptSpeak(), 100);
+
     } catch (err) {
-      console.error("TTS Failed:", err);
+      console.error("TTS Initialization Failed:", err);
       setSpeakingId(null);
     }
   };
@@ -86,7 +125,7 @@ export function ChatView({ t, language }: any) {
     try {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        alert("Your browser does not support Speech Recognition. Please try Chrome or Edge.");
+        showToast("Speech Recognition not supported in this browser.", "info");
         return;
       }
 
@@ -115,24 +154,20 @@ export function ChatView({ t, language }: any) {
         };
 
         recognition.onerror = (event: any) => {
-          console.error("Speech Recognition Error:", event.error);
           setIsListening(false);
           if (event.error === 'network') {
-            // Suggest alternative to user
-            console.warn("Persistent network error. Try switching to English or checking browser language packs.");
+            showToast("Internet connection required for microphone", "error");
           }
         };
 
         try {
           recognition.start();
         } catch (e) {
-          console.error("Failed to start recognition:", e);
           setIsListening(false);
         }
       }, 100);
 
     } catch (err) {
-      console.error("STT Initialization Failed:", err);
       setIsListening(false);
     }
   };
@@ -155,7 +190,12 @@ export function ChatView({ t, language }: any) {
   const handleSend = async () => {
     if (!input.trim()) return;
     
-    const userMsg = { role: 'user', content: input, timestamp: Date.now(), synced: false };
+    const userMsg: { role: 'user' | 'bot', content: string, timestamp: number, synced: boolean } = { 
+      role: 'user', 
+      content: input, 
+      timestamp: Date.now(), 
+      synced: false 
+    };
     await db.chatHistory.add(userMsg);
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -169,11 +209,22 @@ export function ChatView({ t, language }: any) {
       });
       const data = await res.json();
       
-      const botMsg = { role: 'bot', content: data.response, timestamp: Date.now(), synced: false };
+      const botMsg: { role: 'user' | 'bot', content: string, timestamp: number, synced: boolean } = { 
+        role: 'bot', 
+        content: data.response, 
+        timestamp: Date.now(), 
+        synced: false 
+      };
       await db.chatHistory.add(botMsg);
       setMessages(prev => [...prev, botMsg]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'bot', content: "Neural link error. Ensure API Key is configured and backend is running." }]);
+      const errorMsg: { role: 'user' | 'bot', content: string, timestamp: number, synced: boolean } = { 
+        role: 'bot', 
+        content: "Neural link error. Ensure API Key is configured and backend is running.", 
+        timestamp: Date.now(), 
+        synced: false 
+      };
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
     }
@@ -211,7 +262,7 @@ export function ChatView({ t, language }: any) {
 
       <div 
         ref={scrollRef} 
-        className="h-[500px] lg:h-[calc(100vh-25rem)] overflow-y-auto p-10 space-y-8 bg-slate-50/30 scroll-smooth relative pointer-events-auto"
+        className="h-[500px] lg:h-[calc(100vh-25rem)] overflow-y-auto p-10 pb-32 space-y-8 bg-slate-50/30 scroll-smooth relative pointer-events-auto"
         style={{ overscrollBehavior: 'contain' }}
       >
          {messages.length === 0 && (
@@ -240,7 +291,7 @@ export function ChatView({ t, language }: any) {
                   {m.role === 'user' ? <User className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}
                </div>
                <div className={cn(
-                 "max-w-[70%] p-6 rounded-[2rem] text-base font-medium leading-relaxed shadow-sm relative group",
+                 "max-w-[70%] p-6 rounded-[2rem] text-base font-medium leading-[1.8] shadow-sm relative group",
                  m.role === 'user' ? "bg-white text-slate-900 rounded-tr-none" : "bg-blue-600 text-white rounded-tl-none shadow-blue-200"
                )}>
                   {m.content}
@@ -259,7 +310,7 @@ export function ChatView({ t, language }: any) {
             </motion.div>
          ))}
          {isLoading && (
-            <div className="flex gap-6">
+            <div className="flex gap-6 pb-10">
                <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center animate-pulse shadow-sm">
                   <Sparkles className="h-5 w-5" />
                </div>
