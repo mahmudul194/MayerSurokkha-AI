@@ -19,6 +19,7 @@ export interface HealthRecord {
 }
 
 export class MayerDB extends Dexie {
+  healthRecords!: Table<HealthRecord>;
   chatHistory!: Table<{ id?: number, role: 'user' | 'bot', content: string, timestamp: number, synced: boolean }>;
   ancVisits!: Table<{ id?: number, week: number, status: 'completed' | 'active' | 'pending', date?: string, synced: boolean }>;
   knowledgeSaved!: Table<{ id?: number, title: string, category: string, timestamp: number, synced: boolean }>;
