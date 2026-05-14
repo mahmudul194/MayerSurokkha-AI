@@ -8,7 +8,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "MayerSurokkha AI | Maternal Health Companion",
+  title: "Mayer Surokkha | Maternal Health Companion",
   description: "Offline-first AI maternal healthcare for rural regions.",
 };
 
