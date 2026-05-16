@@ -155,8 +155,14 @@ export function ChatView({ t, language, showToast }: any) {
 
         recognition.onerror = (event: any) => {
           setIsListening(false);
+          console.error("Speech Recognition Error:", event.error, event.message);
+          
           if (event.error === 'network') {
-            showToast("Internet connection required for microphone", "error");
+            showToast(`Voice Service Error: ${event.error}. Ensure HTTPS is used and Google services are not blocked.`, "error");
+          } else if (event.error === 'not-allowed') {
+            showToast("Microphone access denied. Please check browser permissions.", "error");
+          } else {
+            showToast(`Microphone Error: ${event.error}`, "info");
           }
         };
 
