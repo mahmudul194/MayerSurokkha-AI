@@ -18,6 +18,7 @@ import { ChatView } from '@/components/ChatView';
 import { KnowledgeView } from '@/components/KnowledgeView';
 import { ANCView } from '@/components/ANCView';
 import { NearbyView } from '@/components/NearbyView';
+import { VoiceAssistantView } from '@/components/VoiceAssistantView';
 import { SettingsView } from '@/components/SettingsView';
 import { LogVitalsModal } from '@/components/LogVitalsModal';
 import { OnboardNodeModal } from '@/components/OnboardNodeModal';
@@ -76,7 +77,7 @@ export default function Dashboard() {
       mother_id: "MS-0842",
       risk_level: vitals.bp_sys > 140 ? 'High' : 'Low',
       explanation: vitals.bp_sys > 140 ? 'Elevated blood pressure detected. Immediate rest and consultation recommended.' : 'Vitals are within clinical norms.',
-      advice_bn: vitals.bp_sys > 140 ? 'উচ্চ রক্তচাপ ধরা পড়েছে। অনুগ্রহ করে বিশ্রাম নিন এবং ডাক্তারের পরামর্শ নিন।' : 'আপনার ভাইটালস স্বাভাবিক আছে।',
+      advice_bn: vitals.bp_sys > 140 ? 'উচ্চ রক্তচাপ ধরা পড়েছে। অনুগ্রহ করে বিশ্রাম নিন এবং ডাক্তারের পরামর্শ নিন।' : 'আপনার ভাইটালস স্বাভাবিক আছে দয়া করে সুস্থ থাকুন।',
       timestamp: new Date()
     });
     setShowLogModal(false);
@@ -132,6 +133,7 @@ export default function Dashboard() {
              >
                 {activeTab === 'settings' && <SettingsView language={language} setLanguage={setLanguage} t={t} showToast={showToast} />}
                 {activeTab === 'chat' && <ChatView t={t} language={language} showToast={showToast} />}
+                {activeTab === 'voice' && <VoiceAssistantView t={t} language={language} showToast={showToast} />}
                 {activeTab === 'knowledge' && <KnowledgeView t={t} language={language} showToast={showToast} />}
                 {activeTab === 'anc' && <ANCView t={t} language={language} showToast={showToast} />}
                 {activeTab === 'nearby' && <NearbyView t={t} language={language} showToast={showToast} />}

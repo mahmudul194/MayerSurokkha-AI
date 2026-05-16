@@ -1,186 +1,23 @@
 'use client';
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   Send, Sparkles, User, Bot, 
-  Mic, History, Trash2, Volume2, VolumeX, StopCircle
+  Mic, Trash2, Volume2, StopCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { db } from "@/lib/db";
+import { useChatDb } from "@/hooks/chat/useChatDb";
+import { useTextToSpeech } from "@/hooks/chat/useTextToSpeech";
+import { useChatApi } from "@/hooks/chat/useChatApi";
+import { useAudioRecorder } from "@/hooks/chat/useAudioRecorder";
 
 export function ChatView({ t, language, showToast }: any) {
-  const [messages, setMessages] = useState<any[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [speakingId, setSpeakingId] = useState<number | null>(null);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const { messages, setMessages, clearHistory } = useChatDb();
+  const { speak, speakingId } = useTextToSpeech(language, showToast);
+  const { input, setInput, isLoading, setIsLoading, handleSend } = useChatApi(messages, setMessages, speak, language);
+  const { isListening, startListening } = useAudioRecorder(handleSend, setIsLoading, language, showToast);
   const scrollRef = useRef<any>(null);
-
-  useEffect(() => {
-    const updateVoices = () => {
-      setVoices(window.speechSynthesis.getVoices());
-    };
-    updateVoices();
-    window.speechSynthesis.onvoiceschanged = updateVoices;
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-    };
-  }, []);
-
-  const stripMarkdown = (text: string) => {
-    return text
-      .replace(/\*\*(.*?)\*\*/g, '$1') // Bold
-      .replace(/\*(.*?)\*/g, '$1')     // Italic
-      .replace(/#(.*?)/g, '$1')        // Headers
-      .replace(/`(.*?)`/g, '$1');      // Code
-  };
-
-  const speak = (text: string, id: number) => {
-    try {
-      const cleanText = stripMarkdown(text);
-      if (speakingId === id) {
-        window.speechSynthesis.cancel();
-        setSpeakingId(null);
-        return;
-      }
-
-      window.speechSynthesis.cancel();
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-      }
-      
-      const attemptSpeak = (retries = 3) => {
-        const currentVoices = window.speechSynthesis.getVoices();
-        
-        if (currentVoices.length === 0 && retries > 0) {
-          setTimeout(() => attemptSpeak(retries - 1), 250);
-          return;
-        }
-
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        const targetLang = language === 'bn' ? 'bn' : 'en';
-        
-        // Comprehensive priority matching for Bangla/Bengali
-        let voice = currentVoices.find(v => v.lang === 'bn-BD') ||
-                    currentVoices.find(v => v.lang === 'bn-IN') ||
-                    currentVoices.find(v => v.lang.startsWith('bn')) ||
-                    currentVoices.find(v => v.name.toLowerCase().includes('bengali')) ||
-                    currentVoices.find(v => v.name.toLowerCase().includes('bangla'));
-
-        if (voice) {
-          utterance.voice = voice;
-          utterance.lang = voice.lang;
-        } else {
-          utterance.lang = language === 'bn' ? 'bn-BD' : 'en-US';
-        }
-        
-        utterance.rate = 0.8; 
-        utterance.volume = 1;
-        utterance.pitch = 1;
-
-        utterance.onstart = () => setSpeakingId(id);
-        utterance.onend = () => setSpeakingId(null);
-        utterance.onerror = (e: any) => {
-          if (e.error !== 'interrupted') {
-            console.error("TTS Error:", e.error);
-            if (e.error === 'network') {
-              showToast("Network error: Voice engine requires internet", "error");
-            }
-          }
-          setSpeakingId(null);
-        };
-        
-        window.speechSynthesis.speak(utterance);
-      };
-
-      setTimeout(() => attemptSpeak(), 100);
-
-    } catch (err) {
-      console.error("TTS Initialization Failed:", err);
-      setSpeakingId(null);
-    }
-  };
-
-  const recognitionRef = useRef<any>(null);
-
-  useEffect(() => {
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
-  }, []);
-
-  const startListening = () => {
-    if (isListening) {
-      if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch(e) {}
-      }
-      setIsListening(false);
-      return;
-    }
-
-    try {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        showToast("Speech Recognition not supported in this browser.", "info");
-        return;
-      }
-
-      // Cleanup any existing session first
-      if (recognitionRef.current) {
-        try { recognitionRef.current.abort(); } catch(e) {}
-      }
-
-      // Small delay to let the browser release the mic service
-      setTimeout(() => {
-        const recognition = new SpeechRecognition();
-        recognitionRef.current = recognition;
-        
-        recognition.lang = language === 'bn' ? 'bn-BD' : 'en-US';
-        recognition.interimResults = true;
-        recognition.continuous = false;
-
-        recognition.onstart = () => setIsListening(true);
-        recognition.onend = () => setIsListening(false);
-        recognition.onresult = (event: any) => {
-          const transcript = Array.from(event.results)
-            .map((result: any) => result[0])
-            .map((result: any) => result.transcript)
-            .join('');
-          setInput(transcript);
-        };
-
-        recognition.onerror = (event: any) => {
-          setIsListening(false);
-          console.error("Speech Recognition Error:", event.error, event.message);
-          
-          if (event.error === 'network') {
-            showToast(`Voice Service Error: ${event.error}. Ensure HTTPS is used and Google services are not blocked.`, "error");
-          } else if (event.error === 'not-allowed') {
-            showToast("Microphone access denied. Please check browser permissions.", "error");
-          } else {
-            showToast(`Microphone Error: ${event.error}`, "info");
-          }
-        };
-
-        try {
-          recognition.start();
-        } catch (e) {
-          setIsListening(false);
-        }
-      }, 100);
-
-    } catch (err) {
-      setIsListening(false);
-    }
-  };
-
-  useEffect(() => {
-    loadHistory();
-  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -188,59 +25,9 @@ export function ChatView({ t, language, showToast }: any) {
     }
   }, [messages]);
 
-  const loadHistory = async () => {
-    const history = await db.chatHistory.orderBy('timestamp').toArray();
-    setMessages(history);
-  };
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    
-    const userMsg: { role: 'user' | 'bot', content: string, timestamp: number, synced: boolean } = { 
-      role: 'user', 
-      content: input, 
-      timestamp: Date.now(), 
-      synced: false 
-    };
-    await db.chatHistory.add(userMsg);
-    setMessages(prev => [...prev, userMsg]);
-    setInput("");
-    setIsLoading(true);
-
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const res = await fetch(`${apiUrl}/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input, history: messages, language })
-      });
-      const data = await res.json();
-      
-      const botMsg: { role: 'user' | 'bot', content: string, timestamp: number, synced: boolean } = { 
-        role: 'bot', 
-        content: data.response, 
-        timestamp: Date.now(), 
-        synced: false 
-      };
-      await db.chatHistory.add(botMsg);
-      setMessages(prev => [...prev, botMsg]);
-    } catch (e) {
-      const errorMsg: { role: 'user' | 'bot', content: string, timestamp: number, synced: boolean } = { 
-        role: 'bot', 
-        content: "Neural link error. Ensure API Key is configured and backend is running.", 
-        timestamp: Date.now(), 
-        synced: false 
-      };
-      setMessages(prev => [...prev, errorMsg]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const clearHistory = async () => {
-    if (confirm("Clear all chat history?")) {
-      await db.chatHistory.clear();
-      setMessages([]);
+  const handleClear = async () => {
+    if (confirm(language === 'bn' ? "সমস্ত চ্যাট ইতিহাস মুছে ফেলবেন?" : "Clear all chat history?")) {
+      await clearHistory();
     }
   };
 
@@ -260,7 +47,7 @@ export function ChatView({ t, language, showToast }: any) {
             </div>
          </div>
          <button 
-           onClick={clearHistory}
+           onClick={handleClear}
            className="h-12 px-6 rounded-2xl bg-slate-50 flex items-center gap-2 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all font-black text-[11px] uppercase tracking-widest"
          >
             <Trash2 className="h-4 w-4" /> {language === 'bn' ? "মুছে ফেলুন" : "Clear History"}
@@ -360,7 +147,7 @@ export function ChatView({ t, language, showToast }: any) {
               )}
             </div>
             <button 
-              onClick={handleSend}
+              onClick={() => handleSend()}
               disabled={!input.trim() || isLoading}
               className="h-14 px-8 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-blue-200 hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100"
             >

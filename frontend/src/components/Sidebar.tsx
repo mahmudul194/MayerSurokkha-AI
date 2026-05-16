@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 import { 
   Heart, LayoutDashboard, MessageCircle, BookOpen, 
   MapPin, Settings, LogOut, ChevronLeft, Globe, 
-  Search, Shield, Activity, Calendar
+  Search, Shield, Activity, Calendar, Mic
 } from "lucide-react";
 import { RoleBadge } from "./RoleBadge";
 
@@ -16,6 +16,7 @@ export function Sidebar({
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard },
     { id: 'chat', icon: MessageCircle, label: t.ai_assistant },
+    { id: 'voice', icon: Mic, label: language === 'bn' ? "ভয়েস অ্যাসিস্ট্যান্ট" : "Voice Assistant" },
     { id: 'knowledge', icon: BookOpen, label: t.knowledge_base },
     { id: 'anc', icon: Calendar, label: t.anc_schedule },
     { id: 'nearby', icon: MapPin, label: t.nearby_centers },

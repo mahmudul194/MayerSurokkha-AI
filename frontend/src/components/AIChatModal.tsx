@@ -1,17 +1,16 @@
 'use client';
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, Send, Sparkles, User, Bot, 
-  ChevronRight, Mic, Volume2, Shield
+  Mic
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAIChat } from "@/hooks/chat/useAIChat";
 
 export function AIChatModal({ isOpen, onClose, t, language }: any) {
-  const [messages, setMessages] = useState<any[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { messages, input, setInput, isLoading, handleSend } = useAIChat(language);
   const scrollRef = useRef<any>(null);
 
   useEffect(() => {
@@ -19,28 +18,6 @@ export function AIChatModal({ isOpen, onClose, t, language }: any) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMsg]);
-    setInput("");
-    setIsLoading(true);
-
-    try {
-      const res = await fetch("http://localhost:8000/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input, history: messages, language })
-      });
-      const data = await res.json();
-      setMessages(prev => [...prev, { role: 'bot', content: data.response }]);
-    } catch (e) {
-      setMessages(prev => [...prev, { role: 'bot', content: "Neural link error. Ensure API Key is configured and backend is running." }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <AnimatePresence>
@@ -139,7 +116,7 @@ export function AIChatModal({ isOpen, onClose, t, language }: any) {
                     className="flex-1 h-14 bg-slate-50 border-none rounded-2xl px-6 text-base font-bold focus:ring-2 focus:ring-blue-100"
                   />
                   <button 
-                    onClick={handleSend}
+                    onClick={() => handleSend()}
                     disabled={!input.trim()}
                     className="h-14 px-8 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-blue-200 hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100"
                   >
