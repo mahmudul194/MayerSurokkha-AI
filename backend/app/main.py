@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .risk_engine import engine, HealthInput, RiskResult
 from .rag_engine import rag_engine
+from .database import db
 from typing import List
 import os
 
@@ -17,6 +18,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+async def startup_db_client():
+    await db.connect()
 
 @app.get("/")
 async def root():
@@ -33,27 +38,56 @@ async def predict(data: HealthInput):
 
 @app.post("/sync")
 async def sync_records(data: dict):
-    """Batch Sync for Offline-First Data (Hybrid Model)"""
+    """Batch Sync for Offline-First Data (Cloud Persistence)"""
     results = {
         "vitals": [],
         "chat": 0,
         "anc": 0
     }
     
-    # Sync Vitals
+    # 1. Sync Vitals
     records = data.get("vitals", [])
     for record in records:
         try:
-            # Wrap data in HealthInput for validation if needed
+            # Analyze and Save to Cloud
             from .risk_engine import HealthInput
             res = await engine.analyze(HealthInput(**record), rag_engine)
-            results["vitals"].append(res)
-        except:
-            pass
             
-    # Placeholder for Chat & ANC Sync (would save to MongoDB in production)
-    results["chat"] = len(data.get("chat", []))
-    results["anc"] = len(data.get("anc", []))
+            # Prepare for MongoDB (Convert objects to dicts if needed)
+            db_record = record.copy()
+            db_record["analysis"] = res.dict()
+            
+            await db.health_records.update_one(
+                {"mother_id": record.get("mother_id"), "timestamp": record.get("timestamp")},
+                {"$set": db_record},
+                upsert=True
+            )
+            results["vitals"].append(res)
+        except Exception as e:
+            print(f"Sync Error (Vitals): {e}")
+            
+    # 2. Sync Chat History
+    chat_logs = data.get("chat", [])
+    if chat_logs:
+        try:
+            await db.chat_history.insert_many(chat_logs, ordered=False)
+            results["chat"] = len(chat_logs)
+        except Exception as e:
+            print(f"Sync Error (Chat): {e}")
+
+    # 3. Sync ANC Visits
+    anc_data = data.get("anc", [])
+    if anc_data:
+        try:
+            for visit in anc_data:
+                await db.anc_visits.update_one(
+                    {"mother_id": visit.get("mother_id"), "week": visit.get("week")},
+                    {"$set": visit},
+                    upsert=True
+                )
+            results["anc"] = len(anc_data)
+        except Exception as e:
+            print(f"Sync Error (ANC): {e}")
     
     return {"status": "success", "synced_count": len(records), "analysis": results}
 
