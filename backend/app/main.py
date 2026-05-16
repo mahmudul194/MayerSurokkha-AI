@@ -1,10 +1,11 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from .risk_engine import engine, HealthInput, RiskResult
 from .rag_engine import rag_engine
+from .voice_engine import voice_engine
 from .database import db
 from typing import List
 import os
@@ -117,6 +118,47 @@ async def chat_endpoint(data: dict):
         return {"response": response}
     except Exception as e:
         return {"response": f"Error connecting to Neural Link: {str(e)}"}
+
+@app.post("/voice/process")
+async def process_voice(audio: UploadFile = File(...)):
+    """Handles audio processing: STT + Moderation via Gemini"""
+    try:
+        content = await audio.read()
+        mime_type = audio.content_type or "audio/webm"
+        result = await voice_engine.process_audio(content, mime_type)
+        return result.dict()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Voice processing failed: {str(e)}")
+
+from pydantic import BaseModel
+
+class TTSRequest(BaseModel):
+    text: str
+    language: str = "bn"
+
+@app.post("/tts")
+async def post_tts(req: TTSRequest):
+    """Proxy for Google TTS to bypass browser CORS and Referer restrictions"""
+    import urllib.request
+    import urllib.parse
+    import textwrap
+    from fastapi.responses import Response
+    
+    try:
+        # Google TTS has a strict ~200 character limit. Split text safely.
+        chunks = textwrap.wrap(req.text, width=150, break_long_words=False)
+        full_audio = b""
+        
+        for chunk in chunks:
+            url = f"https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl={req.language}&q={urllib.parse.quote(chunk)}"
+            request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            response = urllib.request.urlopen(request)
+            full_audio += response.read()
+            
+        return Response(content=full_audio, media_type="audio/mpeg")
+    except Exception as e:
+        print(f"TTS Proxy Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
