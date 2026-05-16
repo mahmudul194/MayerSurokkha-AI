@@ -8,9 +8,9 @@ class MayerDatabase:
     def __init__(self):
         self.client = None
         self.db = None
-        self.uri = os.getenv("MONGODB_URL")
         
     async def connect(self):
+        self.uri = os.getenv("MONGODB_URL")
         if not self.uri:
             print("Database Error: MONGODB_URL not found in environment.")
             return
