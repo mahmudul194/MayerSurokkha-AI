@@ -9,6 +9,7 @@ export interface HealthRecord {
   week: number;
   bp_sys: number;
   bp_dia: number;
+  temp?: number;
   risk_level: 'Low' | 'Medium' | 'High';
   risk_score: number;
   explanation: string;
@@ -16,6 +17,9 @@ export interface HealthRecord {
   timestamp: number;
   synced: boolean;
   encrypted_data: string;
+  location?: string;
+  lat?: number;
+  lng?: number;
 }
 
 export class MayerDB extends Dexie {
@@ -58,9 +62,10 @@ export async function seedDatabase() {
       mother_id: "MS-0842",
       name: "Ayesha Begum",
       age: 24,
-      week: 32,
+      week: 16,
       bp_sys: 165,
       bp_dia: 100,
+      temp: 99.1,
       risk_level: "High",
       risk_score: 85,
       explanation: "Critical: Severe hypertension detected (165/100). High risk of preeclampsia. Immediate medical intervention required.",
@@ -76,6 +81,7 @@ export async function seedDatabase() {
       week: 24,
       bp_sys: 135,
       bp_dia: 85,
+      temp: 98.6,
       risk_level: "Medium",
       risk_score: 55,
       explanation: "Warning: Blood pressure is slightly elevated. Monitor daily. Ensure adequate hydration and rest.",
@@ -91,6 +97,7 @@ export async function seedDatabase() {
       week: 16,
       bp_sys: 115,
       bp_dia: 75,
+      temp: 98.4,
       risk_level: "Low",
       risk_score: 15,
       explanation: "Normal: Vitals are within normal ranges. Continue regular prenatal vitamins and diet.",
