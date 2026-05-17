@@ -28,7 +28,7 @@ export function ANCView({ t, language, showToast }: any) {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* LMP Planner Panel */}
-      <div className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20">
+      <div className="p-6 md:p-8 bg-white rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <h4 className="text-xl font-black text-slate-900 tracking-tight">
@@ -87,8 +87,8 @@ export function ANCView({ t, language, showToast }: any) {
       </div>
 
       {/* Main ANC Milestones list */}
-      <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col border border-slate-100">
-        <div className="p-10 border-b border-slate-50 flex items-center justify-between">
+      <div className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col border border-slate-100">
+        <div className="p-6 md:p-10 border-b border-slate-50 flex items-center justify-between">
            <div className="flex items-center gap-6">
               <div className="h-14 w-14 bg-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-200">
                  <Calendar className="h-7 w-7 text-white" />

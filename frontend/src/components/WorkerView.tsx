@@ -10,7 +10,7 @@ export function WorkerView({ onSync, onRegister, isSyncing, t, language }: any) 
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-         <div className="asymmetric-panel bg-white p-8 border-white shadow-xl shadow-slate-200/20">
+         <div className="asymmetric-panel bg-white p-6 md:p-8 border-white shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-4 mb-4">
                <div className="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center">
                   <Navigation className="h-5 w-5 text-emerald-500" />
@@ -19,7 +19,7 @@ export function WorkerView({ onSync, onRegister, isSyncing, t, language }: any) 
             </div>
             <div className="text-3xl font-black text-slate-900 tracking-tighter">12 / 20</div>
          </div>
-         <div className="asymmetric-panel bg-white p-8 border-white shadow-xl shadow-slate-200/20">
+         <div className="asymmetric-panel bg-white p-6 md:p-8 border-white shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-4 mb-4">
                <div className="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center">
                   <Database className="h-5 w-5 text-blue-500" />
@@ -33,11 +33,11 @@ export function WorkerView({ onSync, onRegister, isSyncing, t, language }: any) 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
          <button 
            onClick={onRegister}
-           className="asymmetric-panel bg-linear-to-br from-emerald-600 to-teal-700 p-12 group hover:scale-[1.02] transition-all text-left relative overflow-hidden"
+           className="asymmetric-panel bg-linear-to-br from-emerald-600 to-teal-700 p-6 md:p-12 group hover:scale-[1.02] transition-all text-left relative overflow-hidden"
          >
             <div className="relative z-10 text-white">
                <Plus className="h-16 w-16 mb-6 group-hover:rotate-90 transition-transform" />
-               <h3 className="text-4xl font-black uppercase tracking-tighter leading-none">{t.register_mother || "New Mother Registration"}</h3>
+               <h3 className="text-2xl sm:text-4xl font-black uppercase tracking-tighter leading-none">{t.register_mother || "New Mother Registration"}</h3>
                <p className="mt-4 text-emerald-50 font-medium opacity-80 uppercase tracking-widest text-[13px]">Start AI Diagnostic Journey</p>
             </div>
             <Users className="absolute right-[-20px] bottom-[-20px] h-64 w-64 text-white/10" />
@@ -46,18 +46,18 @@ export function WorkerView({ onSync, onRegister, isSyncing, t, language }: any) 
          <button 
            onClick={onSync}
            disabled={isSyncing}
-           className="asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/40 group hover:scale-[1.02] transition-all text-left relative overflow-hidden"
+           className="asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/40 group hover:scale-[1.02] transition-all text-left relative overflow-hidden"
          >
             <div className="relative z-10">
                <RefreshCw className={cn("h-16 w-16 mb-6 text-blue-600 transition-transform", isSyncing && "animate-spin")} />
-               <h3 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">{t.sync_vault || "Sync Local Vault"}</h3>
+               <h3 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">{t.sync_vault || "Sync Local Vault"}</h3>
                <p className="mt-4 text-slate-400 font-black uppercase tracking-widest text-[13px]">{isSyncing ? "Neural Link Active..." : "Push 85 Local Records to Cloud"}</p>
             </div>
             <Database className="absolute right-[-20px] bottom-[-20px] h-64 w-64 text-slate-50" />
          </button>
       </div>
 
-      <div className="asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30">
+      <div className="asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30">
          <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-8">{t.recent_field_activity || "Recent Field Activity"}</h3>
          <div className="space-y-4">
             {[
@@ -65,7 +65,7 @@ export function WorkerView({ onSync, onRegister, isSyncing, t, language }: any) 
                { mother: "Rahima Khatun", action: "New Registration", time: "1 hour ago", status: "Local" },
                { mother: "Sultana Razia", action: "SOS Response", time: "3 hours ago", status: "Synced" }
             ].map((activity, idx) => (
-               <div key={idx} className="flex items-center justify-between p-6 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 transition-all">
+               <div key={idx} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between p-5 sm:p-6 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 transition-all">
                   <div className="flex items-center gap-6">
                      <div className="h-12 w-12 bg-white rounded-xl shadow-sm flex items-center justify-center font-black text-blue-600">
                         {activity.mother[0]}

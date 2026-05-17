@@ -25,8 +25,8 @@ export function Sidebar({
 
   return (
     <div className={cn(
-      "fixed left-0 top-0 h-screen bg-white border-r border-slate-100 transition-all duration-500 z-50 flex flex-col",
-      collapsed ? "w-24" : "w-80"
+      "fixed top-0 h-screen bg-white border-r border-slate-100 transition-all duration-500 z-50 flex flex-col shadow-2xl lg:shadow-none",
+      collapsed ? "w-[320px] left-[-320px] lg:left-0 lg:w-24" : "w-[320px] left-0"
     )}>
       <div className="p-8 flex items-center justify-between border-b border-slate-50">
         {!collapsed && (

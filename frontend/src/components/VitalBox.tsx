@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 export function VitalBox({ icon, label, value, status, color, language }: any) {
   return (
-    <div className="asymmetric-panel bg-white p-8 border-white shadow-xl shadow-slate-200/20 group hover:scale-[1.02] transition-all">
+    <div className="asymmetric-panel bg-white p-5 md:p-8 border-white shadow-xl shadow-slate-200/20 group hover:scale-[1.02] transition-all">
        <div className={cn("h-12 w-12 rounded-2xl flex items-center justify-center mb-6", 
          color === 'blue' ? "bg-blue-50" : color === 'pink' ? "bg-pink-50" : "bg-emerald-50"
        )}>

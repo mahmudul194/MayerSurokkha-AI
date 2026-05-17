@@ -31,7 +31,7 @@ export function HeroSection({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-      <div className="asymmetric-panel lg:col-span-8 bg-linear-to-br from-blue-600 to-indigo-700 p-16 relative overflow-hidden group">
+      <div className="asymmetric-panel lg:col-span-8 bg-linear-to-br from-blue-600 to-indigo-700 p-8 md:p-16 relative overflow-hidden group">
          <div className="relative z-10 flex flex-col justify-between h-full text-white">
             <div>
                <div className={cn("inline-flex items-center gap-3 bg-white/20 backdrop-blur-md px-5 py-2 rounded-full text-white font-black uppercase tracking-widest mb-8",
@@ -39,7 +39,7 @@ export function HeroSection({
                )}>
                   <Sun className="h-4 w-4" /> {language === 'bn' ? `শুভেচ্ছা • ${getOrdinalWeek(currentWeek)}` : `Nexus Greeting • ${getOrdinalWeek(currentWeek)}`}
                </div>
-               <h2 className="text-6xl font-black text-white leading-[1.1] tracking-tighter">
+               <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-[1.1] tracking-tighter">
                   {language === 'bn' ? "আপনার যাত্রা," : "Your Journey,"} <br/> 
                   {language === 'bn' ? "সম্পূর্ণ সুরক্ষিত।" : "Fully Protected."}
                </h2>
@@ -50,14 +50,14 @@ export function HeroSection({
                   }
                </p>
             </div>
-            <div className="mt-12 flex gap-6">
-               <div className="bg-white/10 rounded-[2rem] p-8 backdrop-blur-xl border border-white/10 flex-1">
+            <div className="mt-8 md:mt-12 flex flex-col sm:flex-row gap-4 md:gap-6">
+               <div className="bg-white/10 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 backdrop-blur-xl border border-white/10 flex-1">
                   <span className={cn("text-blue-100 font-black uppercase tracking-widest opacity-60",
                       language === 'bn' ? "text-[15px]" : "text-[13px]"
                     )}>{language === 'bn' ? "শিশুর বৃদ্ধি" : "Baby Growth"}</span>
                   <div className="mt-2 text-3xl font-bold text-white flex items-center justify-between">{currentGrowth.name} {currentGrowth.icon}</div>
                </div>
-               <div className="bg-white/10 rounded-[2rem] p-8 backdrop-blur-xl border border-white/10 flex-1">
+               <div className="bg-white/10 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 backdrop-blur-xl border border-white/10 flex-1">
                   <span className={cn("text-blue-100 font-black uppercase tracking-widest opacity-60",
                       language === 'bn' ? "text-[15px]" : "text-[13px]"
                     )}>{language === 'bn' ? "সম্ভাব্য প্রসবের তারিখ" : "Estimated Delivery"}</span>
@@ -71,7 +71,7 @@ export function HeroSection({
       </div>
 
       <div className={cn(
-        "asymmetric-panel lg:col-span-4 p-12 flex flex-col justify-between relative overflow-hidden",
+        "asymmetric-panel lg:col-span-4 p-6 md:p-12 flex flex-col justify-between relative overflow-hidden",
         risk === 'High' ? "bg-red-50 border-red-100 shadow-xl shadow-red-200" : "bg-white shadow-2xl shadow-slate-200/40 border-white"
       )}>
          <div>

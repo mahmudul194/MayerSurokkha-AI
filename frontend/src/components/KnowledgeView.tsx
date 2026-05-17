@@ -214,7 +214,7 @@ Sleeping on your **left side** is highly recommended. It increases the amount of
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-4 scrollbar-none">
+      <div className="flex items-center gap-3 overflow-x-auto pb-4 scrollbar-none whitespace-nowrap">
         {categories.map((cat) => {
           const Icon = cat.icon;
           return (
@@ -242,7 +242,7 @@ Sleeping on your **left side** is highly recommended. It increases the amount of
                key={item.id}
                whileHover={{ y: -8 }}
                onClick={() => setSelectedArticle(item)}
-               className="group p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-xl shadow-slate-200/20 flex flex-col justify-between cursor-pointer transition-all duration-300"
+               className="group p-6 sm:p-8 bg-white rounded-[2rem] sm:rounded-[2.5rem] border border-slate-50 shadow-xl shadow-slate-200/20 flex flex-col justify-between cursor-pointer transition-all duration-300"
             >
                <div>
                   <div className="flex justify-between items-center mb-6">
@@ -287,7 +287,7 @@ Sleeping on your **left side** is highly recommended. It increases the amount of
       </div>
 
       {/* AI Expert Consulting Assistant Portal */}
-      <div className="p-10 bg-slate-900 rounded-[3rem] text-white relative overflow-hidden shadow-2xl">
+      <div className="p-6 sm:p-10 bg-slate-900 rounded-[2rem] sm:rounded-[3rem] text-white relative overflow-hidden shadow-2xl">
          <div className="absolute top-0 right-0 h-96 w-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none" />
          <div className="absolute bottom-0 left-0 h-96 w-96 bg-emerald-600/15 rounded-full blur-[100px] pointer-events-none" />
 

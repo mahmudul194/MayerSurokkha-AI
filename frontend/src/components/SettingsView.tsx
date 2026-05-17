@@ -161,7 +161,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
             exit={{ opacity: 0, y: -15 }}
             className="space-y-8"
           >
-            <div className="asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30">
+            <div className="asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30">
                <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-4">
                  {language === 'bn' ? "সিস্টেম সেটিংস" : "System Settings"}
                </h3>
@@ -216,7 +216,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
             </div>
 
             {/* Privacy Alert Box */}
-            <div className="asymmetric-panel bg-slate-900 p-12 text-white relative overflow-hidden">
+            <div className="asymmetric-panel bg-slate-900 p-6 md:p-12 text-white relative overflow-hidden">
                <div className="relative z-10">
                   <Shield className="h-12 w-12 text-blue-400 mb-8" />
                   <h4 className="text-2xl font-black uppercase tracking-tight mb-4">{language === 'bn' ? "নিরাপদ ডেটা ভল্ট" : "Secure Clinical Vault"}</h4>
@@ -240,7 +240,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-8"
           >
-            <div className="asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30 flex flex-col gap-8">
+            <div className="asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30 flex flex-col gap-6 md:gap-8">
               <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
                 <button 
                   onClick={() => setActiveSection('main')}
@@ -326,7 +326,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
                 </div>
 
                 {/* Gorgeous maternal digital health ID card */}
-                <div className="p-8 bg-linear-to-br from-slate-900 via-slate-850 to-blue-950 text-white rounded-[2.5rem] border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col justify-between aspect-video select-none">
+                <div className="p-5 sm:p-8 bg-linear-to-br from-slate-900 via-slate-850 to-blue-950 text-white rounded-[1.8rem] sm:rounded-[2.5rem] border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col justify-between aspect-video select-none">
                   <div className="absolute right-[-30px] top-[-30px] h-44 w-44 bg-blue-500/10 rounded-full blur-2xl" />
                   
                   <div className="flex items-start justify-between relative z-10">
@@ -340,7 +340,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
                   </div>
 
                   <div className="my-6 relative z-10 space-y-1">
-                    <div className="text-2xl font-black uppercase tracking-widest text-white leading-none">{name}</div>
+                    <div className="text-lg sm:text-2xl font-black uppercase tracking-widest text-white leading-none">{name}</div>
                     <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">ID: MS-0842 • BLOOD: {bloodGroup}</div>
                   </div>
 
@@ -373,7 +373,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-8"
           >
-            <div className="asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30 flex flex-col gap-8">
+            <div className="asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30 flex flex-col gap-6 md:gap-8">
               <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
                 <button 
                   onClick={() => setActiveSection('main')}
@@ -483,7 +483,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-8"
           >
-            <div className="asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30 flex flex-col gap-8">
+            <div className="asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30 flex flex-col gap-6 md:gap-8">
               <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
                 <button 
                   onClick={() => setActiveSection('main')}
@@ -525,7 +525,7 @@ export function SettingsView({ t, language, setLanguage, showToast }: any) {
                 {/* Actions Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                   {/* Backup local data button */}
-                  <div className="p-8 bg-slate-50 border border-slate-100 rounded-3xl flex flex-col justify-between gap-6 hover:border-slate-200 transition-all">
+                  <div className="p-5 sm:p-8 bg-slate-50 border border-slate-100 rounded-3xl flex flex-col justify-between gap-6 hover:border-slate-200 transition-all">
                     <div className="space-y-2">
                       <div className="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center shadow-sm">
                         <Download className="h-5 w-5 text-blue-500" />

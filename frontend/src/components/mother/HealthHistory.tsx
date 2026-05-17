@@ -23,7 +23,7 @@ export function HealthHistory({ currentWeek, toBN, language, t, latestRecord, re
             language={language} 
           />
        </div>
-       <div className="asymmetric-panel bg-white p-10 shadow-xl shadow-slate-200/20 border-white">
+       <div className="asymmetric-panel bg-white p-6 md:p-10 shadow-xl shadow-slate-200/20 border-white">
           <h4 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
              <Sun className="h-5 w-5 text-amber-500" /> {t.daily_tip}
           </h4>
@@ -35,7 +35,7 @@ export function HealthHistory({ currentWeek, toBN, language, t, latestRecord, re
        </div>
 
        {/* Health History */}
-       <div className="asymmetric-panel bg-white p-10 border-white shadow-xl shadow-slate-200/20">
+       <div className="asymmetric-panel bg-white p-6 md:p-10 border-white shadow-xl shadow-slate-200/20">
           <h4 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
              <Clock className="h-5 w-5 text-blue-500" /> {t.health_records}
           </h4>

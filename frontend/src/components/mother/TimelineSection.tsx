@@ -22,8 +22,8 @@ export function TimelineSection({ currentWeek, toBN, language, t, onUpdateWeek }
   };
 
   return (
-    <div className="asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30 overflow-hidden">
-       <div className="flex items-center justify-between mb-12">
+    <div className="asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30 overflow-hidden">
+       <div className="flex flex-col sm:flex-row gap-4 justify-between sm:items-center mb-8 md:mb-12">
           <div>
              <h3 className="text-2xl font-black text-slate-900 tracking-tight">{t.pregnancy_journey}</h3>
              <p className={cn("font-black text-slate-400 uppercase tracking-widest mt-1",

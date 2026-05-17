@@ -129,8 +129,8 @@ export function VoiceAssistantView({ t, language, showToast }: any) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-50/50 rounded-[3rem] overflow-hidden">
-      <div className="flex-1 flex flex-col items-center justify-center p-12 relative">
+    <div className="flex flex-col h-full bg-slate-50/50 rounded-[2rem] sm:rounded-[3rem] overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 relative">
         
         {/* Animated Background Aura */}
         <AnimatePresence>
@@ -153,27 +153,27 @@ export function VoiceAssistantView({ t, language, showToast }: any) {
             animate={status === 'listening' ? { scale: [1, 1.1, 1] } : {}}
             transition={{ repeat: Infinity, duration: 1 }}
             className={cn(
-              "h-48 w-48 rounded-[3.5rem] flex items-center justify-center shadow-2xl transition-all duration-500 mb-12",
+              "h-32 w-32 sm:h-48 sm:w-48 rounded-[2.5rem] sm:rounded-[3.5rem] flex items-center justify-center shadow-2xl transition-all duration-500 mb-6 sm:mb-12",
               status === 'idle' ? "bg-white text-slate-300" :
               status === 'listening' ? "bg-red-500 text-white shadow-red-200" :
               status === 'processing' ? "bg-amber-500 text-white shadow-amber-200" :
               "bg-blue-600 text-white shadow-blue-200"
             )}
           >
-            {status === 'idle' && <MicOff className="h-20 w-20" />}
-            {status === 'listening' && <Mic className="h-20 w-20" />}
-            {status === 'processing' && <RefreshCw className="h-20 w-20 animate-spin" />}
-            {status === 'speaking' && <Volume2 className="h-20 w-20 animate-pulse" />}
+            {status === 'idle' && <MicOff className="h-10 w-10 sm:h-20 sm:w-20" />}
+            {status === 'listening' && <Mic className="h-10 w-10 sm:h-20 sm:w-20" />}
+            {status === 'processing' && <RefreshCw className="h-10 w-10 sm:h-20 sm:w-20 animate-spin" />}
+            {status === 'speaking' && <Volume2 className="h-10 w-10 sm:h-20 sm:w-20 animate-pulse" />}
           </motion.div>
 
-          <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-4">
             {status === 'idle' ? (language === 'bn' ? "ভয়েস অ্যাসিস্ট্যান্ট" : "Voice Assistant") :
              status === 'listening' ? (language === 'bn' ? "আমি শুনছি..." : "I'm Listening...") :
              status === 'processing' ? (language === 'bn' ? "প্রসেস হচ্ছে..." : "Processing...") :
              (language === 'bn' ? "অ্যাসিস্ট্যান্ট কথা বলছে" : "Assistant is Speaking")}
           </h2>
           
-          <p className="text-slate-400 text-lg font-medium leading-relaxed mb-12 h-16">
+          <p className="text-slate-400 text-sm sm:text-lg font-medium leading-relaxed mb-6 sm:mb-12 h-16">
             {status === 'idle' ? (language === 'bn' ? "শুরু করতে নিচের বাটনে চাপ দিন" : "Tap the button to start a conversation") :
              status === 'listening' ? (language === 'bn' ? "আপনার প্রশ্নটি বলুন" : "Speak your query clearly") :
              status === 'processing' ? (language === 'bn' ? "আপনার কথা বিশ্লেষণ করা হচ্ছে" : "Analyzing your voice patterns") :
@@ -188,7 +188,7 @@ export function VoiceAssistantView({ t, language, showToast }: any) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 w-full mb-12"
+                className="bg-white p-5 sm:p-8 rounded-[1.8rem] sm:rounded-[2.5rem] shadow-xl border border-slate-100 w-full mb-6 sm:mb-12"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center", 

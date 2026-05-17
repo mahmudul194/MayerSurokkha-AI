@@ -32,8 +32,8 @@ export function ChatView({ t, language, showToast }: any) {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden relative">
-      <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-md">
+    <div className="flex flex-col bg-white rounded-[2rem] sm:rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden relative">
+      <div className="p-5 sm:p-8 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-md">
          <div className="flex items-center gap-4">
             <div className="h-12 w-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
                <Sparkles className="h-6 w-6 text-white" />
@@ -56,7 +56,7 @@ export function ChatView({ t, language, showToast }: any) {
 
       <div 
         ref={scrollRef} 
-        className="h-[500px] lg:h-[calc(100vh-25rem)] overflow-y-auto p-10 pb-32 space-y-8 bg-slate-50/30 scroll-smooth relative pointer-events-auto"
+        className="h-[500px] lg:h-[calc(100vh-25rem)] overflow-y-auto p-5 sm:p-10 pb-32 space-y-6 sm:space-y-8 bg-slate-50/30 scroll-smooth relative pointer-events-auto"
         style={{ overscrollBehavior: 'contain' }}
       >
          {messages.length === 0 && (
@@ -85,7 +85,7 @@ export function ChatView({ t, language, showToast }: any) {
                   {m.role === 'user' ? <User className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}
                </div>
                <div className={cn(
-                 "max-w-[70%] p-6 rounded-[2rem] text-base font-medium leading-[1.8] shadow-sm relative group",
+                 "max-w-[85%] sm:max-w-[70%] p-4 sm:p-6 rounded-[1.8rem] sm:rounded-[2rem] text-sm sm:text-base font-medium leading-[1.8] shadow-sm relative group",
                  m.role === 'user' ? "bg-white text-slate-900 rounded-tr-none" : "bg-blue-600 text-white rounded-tl-none shadow-blue-200"
                )}>
                   {m.content}
@@ -117,7 +117,7 @@ export function ChatView({ t, language, showToast }: any) {
          )}
       </div>
 
-      <div className="p-8 bg-white border-t border-slate-50">
+      <div className="p-4 sm:p-8 bg-white border-t border-slate-50">
          <div className="relative flex items-center gap-4">
             <button 
               onClick={startListening}

@@ -10,7 +10,7 @@ export function AdminView({ t, language }: any) {
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-         <div className="asymmetric-panel bg-white p-8 border-white shadow-xl shadow-slate-200/20">
+         <div className="asymmetric-panel bg-white p-6 md:p-8 border-white shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-4 mb-4">
                <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
                   <Globe className="h-5 w-5 text-indigo-500" />
@@ -19,7 +19,7 @@ export function AdminView({ t, language }: any) {
             </div>
             <div className="text-3xl font-black text-slate-900 tracking-tighter">14 Districts</div>
          </div>
-         <div className="asymmetric-panel bg-white p-8 border-white shadow-xl shadow-slate-200/20">
+         <div className="asymmetric-panel bg-white p-6 md:p-8 border-white shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-4 mb-4">
                <div className="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center">
                   <Server className="h-5 w-5 text-blue-500" />
@@ -31,7 +31,7 @@ export function AdminView({ t, language }: any) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-         <div className="lg:col-span-2 asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30">
+         <div className="lg:col-span-2 asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30">
             <div className="flex items-center justify-between mb-12">
                <div>
                   <h3 className="text-2xl font-black text-slate-900 tracking-tight">{t.neural_load_analytics || "Neural Load Analytics"}</h3>
@@ -57,7 +57,7 @@ export function AdminView({ t, language }: any) {
             </div>
          </div>
 
-         <div className="asymmetric-panel bg-linear-to-br from-slate-900 to-indigo-950 p-12 relative overflow-hidden">
+         <div className="asymmetric-panel bg-linear-to-br from-slate-900 to-indigo-950 p-6 md:p-12 relative overflow-hidden">
             <div className="relative z-10 text-white">
                <Shield className="h-12 w-12 text-indigo-400 mb-8" />
                <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{t.security_audit || "Security Audit"}</h3>

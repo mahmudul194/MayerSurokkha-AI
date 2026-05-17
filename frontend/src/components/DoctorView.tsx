@@ -201,7 +201,7 @@ export function DoctorView({ t, language }: any) {
   return (
     <div className="flex flex-col gap-8 relative">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-         <div className="asymmetric-panel bg-white p-8 border-white shadow-xl shadow-slate-200/20">
+         <div className="asymmetric-panel bg-white p-6 md:p-8 border-white shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-4 mb-4">
                <div className="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center">
                   <Users className="h-5 w-5 text-blue-500" />
@@ -210,7 +210,7 @@ export function DoctorView({ t, language }: any) {
             </div>
             <div className="text-3xl font-black text-slate-900 tracking-tighter">1,284</div>
          </div>
-         <div className="asymmetric-panel bg-white p-8 border-white shadow-xl shadow-slate-200/20">
+         <div className="asymmetric-panel bg-white p-6 md:p-8 border-white shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-4 mb-4">
                <div className="h-10 w-10 bg-red-50 rounded-xl flex items-center justify-center">
                   <AlertTriangle className="h-5 w-5 text-red-500" />
@@ -224,10 +224,10 @@ export function DoctorView({ t, language }: any) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         {/* Main Patient Feed queue */}
         <div className={cn(
-          "asymmetric-panel bg-white p-12 border-white shadow-2xl shadow-slate-200/30 transition-all duration-500",
+          "asymmetric-panel bg-white p-6 md:p-12 border-white shadow-2xl shadow-slate-200/30 transition-all duration-500",
           selectedPatient ? "lg:col-span-7" : "lg:col-span-12"
         )}>
-           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 md:mb-12">
               <div>
                  <h3 className="text-2xl font-black text-slate-900 tracking-tight">{t.patient_queue || "Patient Queue"}</h3>
                  <p className="text-slate-400 font-black uppercase tracking-widest text-[13px] mt-1">{language === 'bn' ? "লাইভ ডায়াগনস্টিক ফিড" : "Live Diagnostic Feed"}</p>
@@ -259,7 +259,7 @@ export function DoctorView({ t, language }: any) {
                        : "bg-slate-50/50 hover:bg-white border-transparent hover:border-slate-100 hover:shadow-xl hover:shadow-slate-200/30"
                    )}
                  >
-                    <div className="flex items-center gap-8">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
                        <div className={cn(
                          "h-16 w-16 rounded-2xl shadow-sm flex items-center justify-center font-black text-xl border transition-all",
                          selectedPatient?.id === p.id ? "bg-blue-600 text-white border-blue-600" : "bg-white text-blue-600 border-slate-100"
@@ -307,7 +307,7 @@ export function DoctorView({ t, language }: any) {
               exit={{ opacity: 0, x: 50 }}
               className="lg:col-span-5 flex flex-col gap-6"
             >
-              <div className="asymmetric-panel bg-white p-8 border-slate-100 shadow-2xl shadow-slate-200/40 relative overflow-hidden flex flex-col gap-6">
+              <div className="asymmetric-panel bg-white p-6 md:p-8 border-slate-100 shadow-2xl shadow-slate-200/40 relative overflow-hidden flex flex-col gap-6">
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
                     <Compass className="h-6 w-6 text-pink-500 animate-spin" />

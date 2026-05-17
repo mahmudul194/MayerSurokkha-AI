@@ -54,10 +54,10 @@ export function LogVitalsModal({ isOpen, onClose, onSave, t, language }: any) {
             initial={{ scale: 0.9, opacity: 0, y: 20 }} 
             animate={{ scale: 1, opacity: 1, y: 0 }} 
             exit={{ scale: 0.9, opacity: 0, y: 20 }} 
-            className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
+            className="relative w-full max-w-2xl bg-white rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="p-10 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-md">
+            <div className="p-6 sm:p-10 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-md">
                <div className="flex items-center gap-6">
                   <div className="h-14 w-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
                      <Plus className="h-7 w-7 text-white" />
@@ -75,7 +75,7 @@ export function LogVitalsModal({ isOpen, onClose, onSave, t, language }: any) {
             </div>
 
             {/* Stepper Indicator */}
-            <div className="px-12 pt-8 flex items-center justify-between">
+            <div className="px-6 sm:px-12 pt-6 sm:pt-8 flex items-center justify-between">
               <span className={cn(
                 "text-xs font-black uppercase tracking-widest",
                 step === 1 ? "text-blue-600" : "text-slate-400"
@@ -92,7 +92,7 @@ export function LogVitalsModal({ isOpen, onClose, onSave, t, language }: any) {
             </div>
 
             {/* Step Content */}
-            <div className="p-12 flex-1">
+            <div className="p-6 sm:p-12 flex-1">
               <AnimatePresence mode="wait">
                 {step === 1 ? (
                   <motion.div
