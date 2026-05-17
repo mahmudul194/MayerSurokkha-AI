@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/db";
-import { VitalBox } from "./VitalBox";
 
 export function DoctorView({ t, language }: any) {
   const [patients, setPatients] = useState<any[]>([]);
