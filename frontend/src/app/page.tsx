@@ -49,6 +49,24 @@ export default function Dashboard() {
   };
 
   const [isOnline, setIsOnline] = useState(true);
+  const [profileName, setProfileName] = useState("Ayesha Begum");
+
+  useEffect(() => {
+    const loadProfileName = async () => {
+      try {
+        const records = await db.healthRecords.where('mother_id').equals("MS-0842").toArray();
+        if (records.length > 0) {
+          const latest = records[records.length - 1];
+          if (latest.name) {
+            setProfileName(latest.name);
+          }
+        }
+      } catch (err) {
+        console.error("Could not load profile name", err);
+      }
+    };
+    loadProfileName();
+  }, []);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -214,12 +232,12 @@ export default function Dashboard() {
            </div>
            <div className="flex items-center gap-6">
               <div className="text-right">
-                 <div className="text-sm font-black text-slate-900 uppercase">{session?.user?.name || "Ayesha Begum"}</div>
-                 <div className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{userRole} NODE 0842</div>
-              </div>
-              <div className="h-12 w-12 bg-slate-100 rounded-2xl border-2 border-white shadow-sm flex items-center justify-center font-black text-slate-400">
-                 {session?.user?.name?.[0] || "A"}
-              </div>
+                  <div className="text-sm font-black text-slate-900 uppercase">{profileName}</div>
+                  <div className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{userRole} NODE 0842</div>
+               </div>
+               <div className="h-12 w-12 bg-blue-50 text-blue-600 rounded-2xl border-2 border-white shadow-sm flex items-center justify-center font-black">
+                  {profileName[0] || "A"}
+               </div>
            </div>
         </header>
 
