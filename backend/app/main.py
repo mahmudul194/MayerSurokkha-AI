@@ -136,25 +136,50 @@ class TTSRequest(BaseModel):
     text: str
     language: str = "bn"
 
+def clean_tts_text(text: str) -> str:
+    import re
+    # Remove markdown formatting bold, italic, code
+    text = re.sub(r'\*\*|\*|`|#+\s?', ' ', text)
+    # Remove list indicators and hyphens
+    text = re.sub(r'[-*•]', ' ', text)
+    # Remove emojis and high-unicode symbols, keep standard ASCII and Bengali Unicode characters
+    text = re.sub(r'[^\u0000-\u007F\u0980-\u09FF\s.,!?;:]', '', text)
+    # Clean up excess spaces
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
 @app.post("/tts")
 async def post_tts(req: TTSRequest):
     """Proxy for Google TTS to bypass browser CORS and Referer restrictions"""
     import urllib.request
     import urllib.parse
     import textwrap
+    import concurrent.futures
     from fastapi.responses import Response
     
     try:
+        sanitized_text = clean_tts_text(req.text)
+        if not sanitized_text:
+            return Response(content=b"", media_type="audio/mpeg")
+
         # Google TTS has a strict ~200 character limit. Split text safely.
-        chunks = textwrap.wrap(req.text, width=150, break_long_words=False)
-        full_audio = b""
+        chunks = textwrap.wrap(sanitized_text, width=150, break_long_words=False)
         
-        for chunk in chunks:
-            url = f"https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl={req.language}&q={urllib.parse.quote(chunk)}"
+        urls = [
+            f"https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl={req.language}&q={urllib.parse.quote(chunk)}"
+            for chunk in chunks
+        ]
+        
+        def fetch_chunk(url):
             request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-            response = urllib.request.urlopen(request)
-            full_audio += response.read()
+            with urllib.request.urlopen(request) as response:
+                return response.read()
+
+        # Fetch all chunks in parallel using thread pool to dramatically reduce latency
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(urls), 10)) as executor:
+            results = list(executor.map(fetch_chunk, urls))
             
+        full_audio = b"".join(results)
         return Response(content=full_audio, media_type="audio/mpeg")
     except Exception as e:
         print(f"TTS Proxy Error: {e}")
