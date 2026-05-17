@@ -17,8 +17,8 @@ export function HealthHistory({ currentWeek, toBN, language, t, latestRecord, re
           <VitalBox 
             icon={<Thermometer className="text-pink-500" />} 
             label={t.temperature} 
-            value={latestRecord ? toBN("98.4") + " F" : "-- F"} 
-            status="Normal" 
+            value={latestRecord && latestRecord.temp ? `${toBN(latestRecord.temp.toFixed(1))} °F` : "-- °F"} 
+            status={latestRecord && latestRecord.temp ? (latestRecord.temp >= 100.4 ? (language === 'bn' ? 'জ্বর' : 'Fever Warning') : (language === 'bn' ? 'স্বাভাবিক' : 'Normal')) : (language === 'bn' ? 'কোন তথ্য নেই' : 'No Data')} 
             color="pink" 
             language={language} 
           />
