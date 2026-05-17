@@ -12,8 +12,6 @@ export const metadata: Metadata = {
   description: "Offline-first AI maternal healthcare for rural regions.",
 };
 
-import SmoothScroll from "@/components/SmoothScroll";
-
 import Providers from "@/components/Providers";
 
 export default function RootLayout({
@@ -25,9 +23,7 @@ export default function RootLayout({
     <html lang="en" className={`${outfit.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-outfit">
         <Providers>
-          <SmoothScroll>
-            {children}
-          </SmoothScroll>
+          {children}
         </Providers>
       </body>
     </html>
