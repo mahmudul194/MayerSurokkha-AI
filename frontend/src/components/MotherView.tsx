@@ -8,7 +8,7 @@ import { HealthHistory } from "./mother/HealthHistory";
 import { QuickActions } from "./mother/QuickActions";
 
 export function MotherView({ prediction, onSOS, onLog, t, language, isAudioPlaying, setIsAudioPlaying, showToast }: any) {
-  const { records, latestRecord, currentWeek, risk, currentGrowth, toBN } = useMotherDashboard(language, prediction);
+  const { records, latestRecord, currentWeek, risk, currentGrowth, toBN, updateWeek } = useMotherDashboard(language, prediction);
   const { speak, speakingId } = useTextToSpeech(language, showToast || console.error);
 
   const isActuallyPlaying = speakingId === 999;
@@ -34,6 +34,7 @@ export function MotherView({ prediction, onSOS, onLog, t, language, isAudioPlayi
         toBN={toBN} 
         language={language} 
         t={t} 
+        onUpdateWeek={updateWeek}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
