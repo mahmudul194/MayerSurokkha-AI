@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { 
   MapPin, Phone, Clock, Navigation, RefreshCw, 
-  ShieldAlert, Activity, Check, Compass, AlertCircle
+  ShieldAlert, Activity, Check, Compass, AlertCircle, X
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/db";
