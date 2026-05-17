@@ -30,7 +30,24 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState('bn');
   const [collapsed, setCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTabState] = useState('dashboard');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTab = sessionStorage.getItem('activeTab');
+      if (savedTab) {
+        setActiveTabState(savedTab);
+      }
+    }
+  }, []);
+
+  const setActiveTab = (tab: string) => {
+    setActiveTabState(tab);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('activeTab', tab);
+    }
+  };
+
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
