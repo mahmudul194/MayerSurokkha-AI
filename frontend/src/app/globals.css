@@ -26,6 +26,10 @@
   --radius: 1.5rem;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: #f8fafc;
   background-image: 
