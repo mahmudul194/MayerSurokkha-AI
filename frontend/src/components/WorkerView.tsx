@@ -61,7 +61,7 @@ export function WorkerView({ onSync, onRegister, isSyncing, t, language }: any) 
          <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-8">{t.recent_field_activity || "Recent Field Activity"}</h3>
          <div className="space-y-4">
             {[
-               { mother: "Fatema Begum", action: "Vitals Recorded", time: "10 mins ago", status: "Synced" },
+               { mother: "Ayesha Begum", action: "Vitals Recorded", time: "10 mins ago", status: "Synced" },
                { mother: "Rahima Khatun", action: "New Registration", time: "1 hour ago", status: "Local" },
                { mother: "Sultana Razia", action: "SOS Response", time: "3 hours ago", status: "Synced" }
             ].map((activity, idx) => (
