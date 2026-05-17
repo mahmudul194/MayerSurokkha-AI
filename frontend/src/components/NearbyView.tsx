@@ -718,11 +718,11 @@ export function NearbyView({ t, language, showToast }: any) {
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       {/* Geolocation Sync Dashboard */}
-      <div className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="p-6 sm:p-8 bg-white rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Compass className="h-5 w-5 text-blue-600 animate-spin" />
-            <h4 className="text-xl font-black text-slate-900 tracking-tight">
+            <h4 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
               {language === 'bn' ? "লাইভ জিপিএস রিকমেন্ডেশন নোড" : "Satellite GPS Locator Node"}
             </h4>
           </div>
@@ -746,7 +746,7 @@ export function NearbyView({ t, language, showToast }: any) {
         <button 
           onClick={handleGeoSync}
           disabled={isSyncing}
-          className="px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all flex items-center justify-center gap-3 shadow-lg shrink-0 disabled:opacity-60"
+          className="w-full md:w-auto px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all flex items-center justify-center gap-3 shadow-lg shrink-0 disabled:opacity-60"
         >
           {isSyncing ? <RefreshCw className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4 text-pink-500 fill-pink-500" />}
           {language === 'bn' ? "ক্লিনিক নোড সিঙ্ক করুন" : "Sync Nearby Node GPS"}
@@ -758,11 +758,11 @@ export function NearbyView({ t, language, showToast }: any) {
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-3 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden"
+          className="p-2 sm:p-3 bg-white rounded-[1.8rem] sm:rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden"
         >
           <iframe 
             src={`https://maps.google.com/maps?q=${coords.lat},${coords.lng}&t=k&z=17&output=embed`}
-            className="w-full h-72 rounded-[2rem] border-0 shadow-inner"
+            className="w-full h-52 sm:h-72 rounded-[1.4rem] sm:rounded-[2rem] border-0 shadow-inner"
             allowFullScreen
             loading="lazy"
           />
@@ -770,7 +770,7 @@ export function NearbyView({ t, language, showToast }: any) {
       )}
 
       {/* Filter tab bar */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-4">
         <div>
            <h3 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">{t.nearby_centers}</h3>
            <p className="text-slate-400 font-black uppercase tracking-widest text-[11px] mt-1">
@@ -778,11 +778,11 @@ export function NearbyView({ t, language, showToast }: any) {
            </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
+        <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full sm:w-auto">
           <button
             onClick={() => setFilter('all')}
             className={cn(
-              "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all",
+              "flex-1 sm:flex-none text-center px-3 sm:px-4 py-2 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all",
               filter === 'all' ? "bg-white text-slate-900 shadow-md" : "text-slate-400 hover:text-slate-600"
             )}
           >
@@ -791,7 +791,7 @@ export function NearbyView({ t, language, showToast }: any) {
           <button
             onClick={() => setFilter('recommended')}
             className={cn(
-              "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5",
+              "flex-1 sm:flex-none text-center px-3 sm:px-4 py-2 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5",
               filter === 'recommended' ? "bg-blue-600 text-white shadow-md" : "text-slate-400 hover:text-slate-600"
             )}
           >
@@ -832,23 +832,23 @@ export function NearbyView({ t, language, showToast }: any) {
               <div 
                 key={hospital.id} 
                 className={cn(
-                  "asymmetric-panel bg-white p-8 border transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-8",
+                  "asymmetric-panel bg-white p-5 sm:p-8 border transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-8",
                   isBestMatch 
                     ? "border-blue-500 shadow-2xl shadow-blue-100/40 relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-blue-600 before:rounded-l-3xl"
                     : "border-slate-100 shadow-xl shadow-slate-200/10 hover:border-slate-200"
                 )}
               >
-                 <div className="flex items-start gap-6 flex-1">
+                 <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 flex-1">
                     <div className={cn(
                       "h-16 w-16 rounded-[1.5rem] flex items-center justify-center flex-shrink-0 shadow-sm",
                       isBestMatch ? "bg-blue-50" : "bg-slate-50"
                     )}>
-                       <MapPin className={cn("h-7 w-7", isBestMatch ? "text-blue-600" : "text-slate-400")} />
+                       <MapPin className={cn("h-5 w-5 sm:h-7 sm:w-7", isBestMatch ? "text-blue-600" : "text-slate-400")} />
                     </div>
                     
                     <div className="space-y-3 flex-1">
                        <div className="flex items-center gap-3 flex-wrap">
-                          <h4 className="text-xl font-black text-slate-900 tracking-tight">
+                          <h4 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
                             {language === 'bn' ? hospital.name_bn : hospital.name_en}
                           </h4>
                           
@@ -866,7 +866,7 @@ export function NearbyView({ t, language, showToast }: any) {
                        </div>
 
                        {/* Status & Sub-info line */}
-                       <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+                       <div className="flex flex-wrap gap-3 sm:gap-4 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400">
                           <div className="flex items-center gap-1.5 text-slate-500">
                              <Navigation className="h-4 w-4 text-slate-400" /> {distance}
                           </div>
@@ -899,16 +899,16 @@ export function NearbyView({ t, language, showToast }: any) {
                  </div>
 
                  {/* Action Buttons */}
-                 <div className="flex flex-row lg:flex-col gap-3 shrink-0">
+                 <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto shrink-0">
                     <button 
                       onClick={() => setActiveDirections(hospital)}
-                      className="flex-1 lg:flex-initial h-12 px-6 bg-slate-900 hover:bg-blue-600 text-white rounded-xl font-black uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-sm"
+                      className="w-full lg:w-44 h-12 px-4 bg-slate-900 hover:bg-blue-600 text-white rounded-xl font-black uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-sm"
                     >
                        <Navigation className="h-4 w-4" /> {language === 'bn' ? "পথনির্দেশ" : "Get Directions"}
                     </button>
                     <button 
                       onClick={() => setActiveCall(hospital)}
-                      className="flex-1 lg:flex-initial h-12 px-6 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 rounded-xl font-black uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
+                      className="w-full lg:w-44 h-12 px-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 rounded-xl font-black uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
                     >
                        <Phone className="h-4 w-4 text-blue-500" /> {language === 'bn' ? "কল করুন" : "Call Facility"}
                     </button>
@@ -934,7 +934,7 @@ export function NearbyView({ t, language, showToast }: any) {
               initial={{ scale: 0.9, opacity: 0, y: 20 }} 
               animate={{ scale: 1, opacity: 1, y: 0 }} 
               exit={{ scale: 0.9, opacity: 0, y: 20 }} 
-              className="relative w-full max-w-xl bg-white rounded-[3rem] shadow-2xl p-10 overflow-hidden flex flex-col border border-slate-50"
+              className="relative w-full max-w-xl bg-white rounded-[2rem] sm:rounded-[3rem] shadow-2xl p-6 sm:p-10 overflow-hidden flex flex-col border border-slate-50 max-h-[90vh]"
             >
               <div className="flex items-center justify-between pb-6 border-b border-slate-100">
                 <div className="flex items-center gap-4">
