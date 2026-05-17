@@ -9,6 +9,26 @@ export function HeroSection({
     ? (prediction?.advice_bn || latestRecord?.advice_bn || "কোনো সাম্প্রতিক ডায়াগনস্টিক তথ্য পাওয়া যায়নি। কৃপয়া আপনার ভাইটালস লগ করুন।")
     : (prediction?.explanation || latestRecord?.explanation || "No recent logs detected. Please use the 'Log Vitals' tool to update your AI diagnostic score.");
 
+  const getOrdinalWeek = (week: number) => {
+    if (language === 'bn') {
+      const banglaDigits: any = { '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯' };
+      const toBNNum = (n: number) => n.toString().split('').map(d => banglaDigits[d] || d).join('');
+      if (week === 1) return "১ম সপ্তাহ";
+      if (week === 2) return "২য় সপ্তাহ";
+      if (week === 3) return "৩য় সপ্তাহ";
+      if (week === 4) return "৪র্থ সপ্তাহ";
+      return `${toBNNum(week)}তম সপ্তাহ`;
+    } else {
+      if (week === 1) return "1st Week";
+      if (week === 2) return "2nd Week";
+      if (week === 3) return "3rd Week";
+      const suffix = (week % 10 === 1 && week !== 11) ? "st" :
+                     (week % 10 === 2 && week !== 12) ? "nd" :
+                     (week % 10 === 3 && week !== 13) ? "rd" : "th";
+      return `${week}${suffix} Week`;
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
       <div className="asymmetric-panel lg:col-span-8 bg-linear-to-br from-blue-600 to-indigo-700 p-16 relative overflow-hidden group">
@@ -17,7 +37,7 @@ export function HeroSection({
                <div className={cn("inline-flex items-center gap-3 bg-white/20 backdrop-blur-md px-5 py-2 rounded-full text-white font-black uppercase tracking-widest mb-8",
                  language === 'bn' ? "text-[15px]" : "text-[13px]"
                )}>
-                  <Sun className="h-4 w-4" /> {language === 'bn' ? `শুভেচ্ছা • সপ্তাহ ${toBN(currentWeek)}` : `Nexus Greeting • Week ${currentWeek}`}
+                  <Sun className="h-4 w-4" /> {language === 'bn' ? `শুভেচ্ছা • ${getOrdinalWeek(currentWeek)}` : `Nexus Greeting • ${getOrdinalWeek(currentWeek)}`}
                </div>
                <h2 className="text-6xl font-black text-white leading-[1.1] tracking-tighter">
                   {language === 'bn' ? "আপনার যাত্রা," : "Your Journey,"} <br/> 
