@@ -72,14 +72,98 @@ export default function Dashboard() {
   }, []);
 
   const handleLogVitals = async (vitals: any) => {
+    let risk_level: 'Low' | 'Medium' | 'High' = 'Low';
+    let risk_score = 15;
+    let explanation = "Vitals are within clinical norms.";
+    let advice_bn = "আপনার ভাইটালস স্বাভাবিক আছে। সুস্থ থাকুন।";
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const payload = {
+        mother_id: "MS-0842",
+        age: 24,
+        week: vitals.week,
+        bp_sys: vitals.bp_sys,
+        bp_dia: vitals.bp_dia,
+        swelling: vitals.swelling,
+        headache_severity: vitals.headache_severity,
+        fever: vitals.fever,
+        diabetes_history: vitals.diabetes_history,
+        fetal_movement: vitals.fetal_movement,
+        bleeding: vitals.bleeding
+      };
+
+      const response = await fetch(`${apiUrl}/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        risk_level = result.risk_level as 'Low' | 'Medium' | 'High';
+        risk_score = result.risk_score;
+        explanation = result.explanation;
+        advice_bn = result.advice_bn || advice_bn;
+        showToast(language === 'bn' ? "ভাইটালস এআই দ্বারা সফলভাবে বিশ্লেষণ করা হয়েছে!" : "Vitals successfully analyzed by AI!", "success");
+      } else {
+        throw new Error("API call failed");
+      }
+    } catch (e) {
+      console.warn("Offline Node Mode: Running local rules classification fallback.", e);
+      // Lightweight Offline Rule-based Classification (Clinical Safety First)
+      if (vitals.bleeding) {
+        risk_level = 'High';
+        risk_score = 95;
+        explanation = "Emergency Alert: Vaginal bleeding detected during gestation. Immediate clinical transportation required.";
+        advice_bn = "জরুরী সতর্কবার্তা: গর্ভাবস্থায় রক্তক্ষরণ দেখা গেছে। অবিলম্বে হাসপাতালে যোগাযোগ করুন।";
+      } else if (vitals.bp_sys >= 140 || vitals.bp_dia >= 90) {
+        risk_level = 'High';
+        risk_score = 80;
+        explanation = "Critical Danger: Elevated blood pressure indicates Gestational Hypertension. Danger of Pre-eclampsia.";
+        advice_bn = "উচ্চ রক্তচাপ ধরা পড়েছে। এটি গর্ভকালীন প্রি-এক্লাম্পসিয়ার ঝুঁকি নির্দেশ করে। অবিলম্বে বিশ্রাম ও পরামর্শ নিন।";
+      } else if (vitals.fetal_movement === 'reduced') {
+        risk_level = 'High';
+        risk_score = 75;
+        explanation = "Warning: Reduced fetal kicks count (<10 in 2 hours). Fetal distress risk. Consult doctor.";
+        advice_bn = "বাচ্চার নড়াচড়া স্বাভাবিকের চেয়ে কম। অবিলম্বে চিকিৎসকের সাথে কথা বলুন।";
+      } else if (vitals.swelling || vitals.fever) {
+        risk_level = 'Medium';
+        risk_score = 45;
+        explanation = "Precautionary Note: Swelling/edema or fever present. Monitor blood pressure daily and stay hydrated.";
+        advice_bn = "হাত-পা ফোলা বা শরীরে জ্বর রয়েছে। প্রতিদিন রক্তচাপ পরিমাপ করুন ও প্রচুর পানি পান করুন।";
+      }
+      showToast(language === 'bn' ? "ভাইটালস অফলাইন নিয়মে সংরক্ষিত হয়েছে!" : "Vitals logged locally in Offline Mode!", "info");
+    }
+
     await db.healthRecords.add({
-      ...vitals,
       mother_id: "MS-0842",
-      risk_level: vitals.bp_sys > 140 ? 'High' : 'Low',
-      explanation: vitals.bp_sys > 140 ? 'Elevated blood pressure detected. Immediate rest and consultation recommended.' : 'Vitals are within clinical norms.',
-      advice_bn: vitals.bp_sys > 140 ? 'উচ্চ রক্তচাপ ধরা পড়েছে। অনুগ্রহ করে বিশ্রাম নিন এবং ডাক্তারের পরামর্শ নিন।' : 'আপনার ভাইটালস স্বাভাবিক আছে দয়া করে সুস্থ থাকুন।',
-      timestamp: new Date()
+      name: "Ayesha Begum",
+      age: 24,
+      week: vitals.week,
+      bp_sys: vitals.bp_sys,
+      bp_dia: vitals.bp_dia,
+      temp: vitals.temp,
+      risk_level,
+      risk_score,
+      explanation,
+      advice_bn,
+      timestamp: Date.now(),
+      synced: navigator.onLine,
+      encrypted_data: db.encrypt({
+        bp_sys: vitals.bp_sys,
+        bp_dia: vitals.bp_dia,
+        temp: vitals.temp,
+        week: vitals.week,
+        swelling: vitals.swelling,
+        headache_severity: vitals.headache_severity,
+        fever: vitals.fever,
+        diabetes_history: vitals.diabetes_history,
+        fetal_movement: vitals.fetal_movement,
+        bleeding: vitals.bleeding
+      })
     });
+
     setShowLogModal(false);
   };
 
@@ -113,11 +197,11 @@ export default function Dashboard() {
            </div>
            <div className="flex items-center gap-6">
               <div className="text-right">
-                 <div className="text-sm font-black text-slate-900 uppercase">{session?.user?.name || "Fatema Begum"}</div>
+                 <div className="text-sm font-black text-slate-900 uppercase">{session?.user?.name || "Ayesha Begum"}</div>
                  <div className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{userRole} NODE 0842</div>
               </div>
               <div className="h-12 w-12 bg-slate-100 rounded-2xl border-2 border-white shadow-sm flex items-center justify-center font-black text-slate-400">
-                 {session?.user?.name?.[0] || "F"}
+                 {session?.user?.name?.[0] || "A"}
               </div>
            </div>
         </header>
