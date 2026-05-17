@@ -31,8 +31,13 @@ export function useTextToSpeech(language: string, showToast: any) {
     return text
       .replace(/\*\*(.*?)\*\*/g, '$1') // Bold
       .replace(/\*(.*?)\*/g, '$1')     // Italic
-      .replace(/#(.*?)/g, '$1')        // Headers
-      .replace(/`(.*?)`/g, '$1');      // Code
+      .replace(/#+\s?(.*?)/g, '$1')    // Headers
+      .replace(/`(.*?)`/g, '$1')      // Code
+      .replace(/[-*•]/g, ' ')          // List bullet indicators
+      .replace(/[:]/g, ' ')            // Colons
+      .replace(/[^\u0000-\u007F\u0980-\u09FF\s.,!?;]/g, '') // Remove emojis and high unicode symbols (keep ASCII + Bangla)
+      .replace(/\s+/g, ' ')            // Normalize spacing
+      .trim();
   };
 
   const speak = (text: string, id: number) => {
