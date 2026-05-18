@@ -9,9 +9,30 @@ import { cn } from "@/lib/utils";
 
 export function NearbyCentersModal({ isOpen, onClose, t, language }: any) {
   const centers = [
-    { name: "Upazila Health Complex", distance: "2.4 km", rating: 4.8, type: "Government", status: "Open 24/7", phone: "+8801700000001" },
-    { name: "Surokkha Satellite Clinic", distance: "0.8 km", rating: 4.9, type: "Partnership", status: "Closing in 2h", phone: "+8801700000002" },
-    { name: "Mother & Child Center", distance: "4.2 km", rating: 4.7, type: "Private", status: "Open 24/7", phone: "+8801700000003" },
+    { 
+      name: language === 'bn' ? "মেরী স্টোপস মেটারনিটি ক্লিনিক (মিরপুর)" : "Marie Stopes Maternity Clinic (Mirpur)", 
+      distance: "0.8 km", 
+      rating: 4.9, 
+      type: language === 'bn' ? "বেসরকারি" : "Private", 
+      status: language === 'bn' ? "খোলা আছে (সার্বক্ষণিক)" : "Open 24/7", 
+      phone: "+8801713090226" 
+    },
+    { 
+      name: language === 'bn' ? "লালকুঠি মাতৃ ও শিশু স্বাস্থ্য প্রশিক্ষণ ইনস্টিটিউট (মিরপুর-৮)" : "Lalkuthi Maternal & Child Health Training Institute (Mirpur-8)", 
+      distance: "2.4 km", 
+      rating: 4.8, 
+      type: language === 'bn' ? "সরকারি" : "Government", 
+      status: language === 'bn' ? "খোলা আছে (সার্বক্ষণিক)" : "Open 24/7", 
+      phone: "+88029002220" 
+    },
+    { 
+      name: language === 'bn' ? "শেরেবাংলা নগর মা ও শিশু কল্যাণ কেন্দ্র" : "Sher-e-Bangla Nagar Mother & Child Welfare Center", 
+      distance: "4.2 km", 
+      rating: 4.7, 
+      type: language === 'bn' ? "সরকারি" : "Government", 
+      status: language === 'bn' ? "খোলা আছে (সার্বক্ষণিক)" : "Open 24/7", 
+      phone: "+88029113645" 
+    },
   ];
 
   return (
