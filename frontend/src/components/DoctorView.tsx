@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { Hospital, getHospitalsForLocation } from "@/lib/hospitals";
 import { 
   Users, Activity, Shield, AlertTriangle, Search, Filter, 
   ChevronRight, Calendar, User, Phone, MapPin, X, HelpCircle, 
@@ -78,40 +79,33 @@ export function DoctorView({ t, language }: any) {
       return;
     }
 
-    // High fidelity optimistic fast clinics to show immediately (0ms latency!)
-    const localClinics = selectedPatient.id === "MS-0842" ? [
-      {
-        id: "fb-mmh",
-        name_en: "Mirpur Maternity Hospital Node 0842",
-        name_bn: "মিরপুর মাতৃসদন হাসপাতাল নোড ০৮৪২",
-        distance: "1.2 km",
-        phone: "+880 1912-998877",
-        isHospital: true,
-        services_en: ["Obstetric Surgery", "Ambulance", "ICU"],
-        services_bn: ["প্রসূতি শল্যচিকিৎসা", "অ্যাম্বুলেন্স সুবিধা", "আইসিইউ"]
-      },
-      {
-        id: "fb-sbmcw",
-        name_en: "Sher-e-Bangla Mother & Child Welfare Center",
-        name_bn: "শেরেবাংলা নগর মা ও শিশু কল্যাণ কেন্দ্র",
-        distance: "3.5 km",
-        phone: "+880 1711-554422",
-        isHospital: true,
-        services_en: ["Normal Delivery", "ANC Clinic"],
-        services_bn: ["স্বাভাবিক প্রসব", "গর্ভকালীন চেকআপ"]
-      }
-    ] : [
-      {
-        id: "fb-khc",
-        name_en: "Kalyanpur Health Complex Node 0911",
-        name_bn: "কল্যাণপুর স্বাস্থ্য কমপ্লেক্স নোড ০৯১১",
-        distance: "0.8 km",
-        phone: "+880 1822-xxxxxx",
-        isHospital: false,
-        services_en: ["General Consultation", "Vitamins"],
-        services_bn: ["সাধারণ পরামর্শ", "ভিটামিন বিতরণ"]
-      }
-    ];
+    // High fidelity optimistic fast clinics to show immediately (using 100% verified real-world clinics)
+    const localClinics = getHospitalsForLocation(
+      selectedPatient.location || selectedPatient.fullLocation || "", 
+      selectedPatient.lat, 
+      selectedPatient.lng
+    ).slice(0, 3).map((c: Hospital) => {
+      // Calculate rough distance since we don't have true Haversine distance here, but that's fine for optimistic UX
+      const R = 6371;
+      const dLat = (c.lat - selectedPatient.lat) * Math.PI / 180;
+      const dLon = (c.lng - selectedPatient.lng) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(selectedPatient.lat * Math.PI / 180) * Math.cos(c.lat * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const distVal = (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+
+      return {
+        id: `fb-${c.id}`,
+        name_en: c.name_en,
+        name_bn: c.name_bn,
+        distance: `${distVal} km`,
+        phone: c.phone,
+        isHospital: c.highRiskSuitable,
+        services_en: c.services_en,
+        services_bn: c.services_bn
+      };
+    });
 
     // Check if clinics are already cached for this patient
     if (clinicCache[selectedPatient.id]) {
@@ -301,13 +295,24 @@ export function DoctorView({ t, language }: any) {
         {/* Dynamic Referral side-drawer panel (suggests clinics by patient neighborhood coordinates!) */}
         <AnimatePresence>
           {selectedPatient && (
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 50 }}
-              className="lg:col-span-5 flex flex-col gap-6"
-            >
-              <div className="asymmetric-panel bg-white p-6 md:p-8 border-slate-100 shadow-2xl shadow-slate-200/40 relative overflow-hidden flex flex-col gap-6">
+            <>
+              {/* Mobile Backdrop Overlay */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedPatient(null)}
+                className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[90] lg:hidden"
+              />
+
+              <motion.div 
+                initial={{ opacity: 0, y: "100%" }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="fixed inset-x-0 bottom-0 z-[100] h-[90vh] lg:h-auto lg:static lg:z-auto lg:col-span-5 flex flex-col"
+              >
+                <div className="bg-white p-6 md:p-8 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] lg:shadow-2xl lg:shadow-slate-200/40 relative overflow-y-auto lg:overflow-hidden flex flex-col gap-6 h-full rounded-t-[32px] lg:rounded-t-[32px] lg:rounded-bl-none lg:rounded-br-[32px] border-t lg:border border-slate-100">
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
                     <Compass className="h-6 w-6 text-pink-500 animate-spin" />
@@ -440,7 +445,8 @@ export function DoctorView({ t, language }: any) {
                   </AnimatePresence>
                 </div>
               </div>
-            </motion.div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>
