@@ -1185,13 +1185,10 @@ export function NearbyView({ t, language, showToast }: any) {
     };
   }).sort((a, b) => b.matchScore - a.matchScore);
 
-  const filteredHospitals = processedHospitals.filter(h => {
-    if (filter === 'recommended') {
-      // Recommend only suitable clinics
-      return isMotherHighRisk ? h.highRiskSuitable : true;
-    }
-    return true;
-  });
+  // If 'AI Suggested' is selected, take the top 3 best matching facilities based on the calculated AI score
+  const filteredHospitals = filter === 'recommended' 
+    ? processedHospitals.slice(0, 3) 
+    : processedHospitals;
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
@@ -1304,7 +1301,7 @@ export function NearbyView({ t, language, showToast }: any) {
       <div className="grid grid-cols-1 gap-6">
          {filteredHospitals.map((hospital, i) => {
             const distance = getDistanceStr(hospital);
-            const isBestMatch = i === 0 && (isMotherHighRisk ? hospital.highRiskSuitable : true);
+            const isBestMatch = i === 0;
             
             return (
               <div 
@@ -1331,11 +1328,16 @@ export function NearbyView({ t, language, showToast }: any) {
                           </h4>
                           
                           {/* Recommended Glowing Tag */}
-                          {isBestMatch && (
+                          {isBestMatch ? (
                             <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-sm animate-pulse shrink-0">
-                              {language === 'bn' ? "এআই সেরা সাজেশন" : "AI Suggested Match"}
+                              {language === 'bn' ? "এআই সেরা সাজেশন" : "Top AI Match"}
                             </span>
-                          )}
+                          ) : filter === 'recommended' ? (
+                            <span className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-sm shrink-0 flex items-center gap-1">
+                              <Activity className="h-3 w-3" />
+                              {language === 'bn' ? "এআই সাজেস্টেড" : "AI Suggested"}
+                            </span>
+                          ) : null}
                           
                           {/* Match Score Badge */}
                           <span className="px-2 py-0.5 bg-slate-50 border border-slate-200 text-slate-500 text-[9px] font-bold uppercase rounded-md shrink-0">
