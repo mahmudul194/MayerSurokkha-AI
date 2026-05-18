@@ -95,6 +95,21 @@ export default function Dashboard() {
   const t = (translations as any)[language];
   const userRole = (session?.user as any)?.role || 'MOTHER';
 
+  // Role-based Access Validation
+  useEffect(() => {
+    const validTabs: Record<string, string[]> = {
+      'MOTHER': ['dashboard', 'chat', 'voice', 'knowledge', 'anc', 'nearby', 'settings'],
+      'DOCTOR': ['dashboard', 'chat', 'nearby', 'settings'],
+      'WORKER': ['dashboard', 'nearby', 'settings'],
+      'ADMIN': ['dashboard', 'settings']
+    };
+    
+    const allowed = validTabs[userRole] || validTabs['MOTHER'];
+    if (!allowed.includes(activeTab)) {
+      setActiveTab('dashboard');
+    }
+  }, [userRole, activeTab]);
+
   useEffect(() => {
     setTimeout(() => setLoading(false), 2000);
     const handleStatus = () => setIsOnline(navigator.onLine);
@@ -251,11 +266,11 @@ export default function Dashboard() {
                transition={{ duration: 0.5 }}
              >
                 {activeTab === 'settings' && <SettingsView language={language} setLanguage={setLanguage} t={t} showToast={showToast} />}
-                {activeTab === 'chat' && <ChatView t={t} language={language} showToast={showToast} />}
-                {activeTab === 'voice' && <VoiceAssistantView t={t} language={language} showToast={showToast} />}
-                {activeTab === 'knowledge' && <KnowledgeView t={t} language={language} showToast={showToast} />}
-                {activeTab === 'anc' && <ANCView t={t} language={language} showToast={showToast} />}
-                {activeTab === 'nearby' && <NearbyView t={t} language={language} showToast={showToast} />}
+                {(activeTab === 'chat' && ['MOTHER', 'DOCTOR'].includes(userRole)) && <ChatView t={t} language={language} showToast={showToast} />}
+                {(activeTab === 'voice' && userRole === 'MOTHER') && <VoiceAssistantView t={t} language={language} showToast={showToast} />}
+                {(activeTab === 'knowledge' && userRole === 'MOTHER') && <KnowledgeView t={t} language={language} showToast={showToast} />}
+                {(activeTab === 'anc' && userRole === 'MOTHER') && <ANCView t={t} language={language} showToast={showToast} />}
+                {(activeTab === 'nearby' && ['MOTHER', 'DOCTOR', 'WORKER'].includes(userRole)) && <NearbyView t={t} language={language} showToast={showToast} />}
                 {activeTab === 'dashboard' && (
                   <>
                     {userRole === 'MOTHER' && (
