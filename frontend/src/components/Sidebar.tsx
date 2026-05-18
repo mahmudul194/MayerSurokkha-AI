@@ -13,15 +13,44 @@ export function Sidebar({
   collapsed, setCollapsed, activeTab, setActiveTab, 
   language, setLanguage, role, t
 }: any) {
-  const menuItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard },
-    { id: 'chat', icon: MessageCircle, label: t.ai_assistant },
-    { id: 'voice', icon: Mic, label: language === 'bn' ? "ভয়েস অ্যাসিস্ট্যান্ট" : "Voice Assistant" },
-    { id: 'knowledge', icon: BookOpen, label: t.knowledge_base },
-    { id: 'anc', icon: Calendar, label: t.anc_schedule },
-    { id: 'nearby', icon: MapPin, label: t.nearby_centers },
-    { id: 'settings', icon: Settings, label: t.settings },
-  ];
+  const getMenuItems = (currentRole: string) => {
+    const motherItems = [
+      { id: 'dashboard', icon: LayoutDashboard, label: t.dashboard || "Dashboard" },
+      { id: 'chat', icon: MessageCircle, label: t.ai_assistant || "AI Assistant" },
+      { id: 'voice', icon: Mic, label: language === 'bn' ? "ভয়েস অ্যাসিস্ট্যান্ট" : "Voice Assistant" },
+      { id: 'knowledge', icon: BookOpen, label: t.knowledge_base || "Knowledge Base" },
+      { id: 'anc', icon: Calendar, label: t.anc_schedule || "ANC Schedule" },
+      { id: 'nearby', icon: MapPin, label: t.nearby_centers || "Nearby Centers" },
+      { id: 'settings', icon: Settings, label: t.settings || "Settings" },
+    ];
+
+    const doctorItems = [
+      { id: 'dashboard', icon: LayoutDashboard, label: language === 'bn' ? "রোগী ডিরেক্টরি" : "Patient Directory" },
+      { id: 'chat', icon: MessageCircle, label: language === 'bn' ? "মেডিকেল এআই" : "Medical AI" },
+      { id: 'nearby', icon: MapPin, label: language === 'bn' ? "রেফারেল নেটওয়ার্ক" : "Referral Network" },
+      { id: 'settings', icon: Settings, label: t.settings || "Settings" },
+    ];
+
+    const workerItems = [
+      { id: 'dashboard', icon: LayoutDashboard, label: language === 'bn' ? "ফিল্ড নোড" : "Field Node" },
+      { id: 'nearby', icon: MapPin, label: language === 'bn' ? "স্বাস্থ্যকেন্দ্র ডিরেক্টরি" : "Center Directory" },
+      { id: 'settings', icon: Settings, label: t.settings || "Settings" },
+    ];
+
+    const adminItems = [
+      { id: 'dashboard', icon: LayoutDashboard, label: language === 'bn' ? "কমান্ড সেন্টার" : "Command Center" },
+      { id: 'settings', icon: Settings, label: t.settings || "Settings" },
+    ];
+
+    switch (currentRole) {
+      case 'DOCTOR': return doctorItems;
+      case 'WORKER': return workerItems;
+      case 'ADMIN': return adminItems;
+      default: return motherItems; // MOTHER
+    }
+  };
+
+  const menuItems = getMenuItems(role);
 
   return (
     <div className={cn(
